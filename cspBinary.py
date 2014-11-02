@@ -1,11 +1,14 @@
 #
 # Rich Simpson
-# October 21, 2014
+# Nov 1, 2014
 #
-# This code is used in my CSCI 355 course. It implements
-# constraint satisfaction problems
+# This code is used in my CSCI 355 course. It implements constraint satisfaction
+# problems. This version of the code only uses binary constraints.
 
 __author__ = 'rsimpson'
+
+# This value is used to determine the size of the board when doing an n-queens problem
+GRIDSIZE = 8
 
 
 class CSPFeature:
@@ -26,13 +29,17 @@ class CSPFeature:
 
 
 class CSPConstraint:
-    def __init__(self, lstFeatures, strConstraint):
+    def __init__(self, ftrTail, strConstraint, ftrHead):
         """
         Create a constraint object, which represents a constraint between
-        multiple variables in the CSP graph
+        two variables in the CSP graph
         """
-        # store the list of feature objects involved in the constraint
-        self.features = lstFeatures
+        # the tail feature of the constraint is the "left side" of the constraint
+        # (i.e., tail < head for the "less than" constraint
+        self.tail = ftrTail
+        # the head feature of the constraint is the "right side" of the constraint
+        # (i.e., tail < head for the "less than" constraint
+        self.head = ftrHead
         # store the constraint
         self.constraint = strConstraint
 
@@ -40,14 +47,8 @@ class CSPConstraint:
         """
         Print the contents of  a constraint object
         """
-        # start with an empty list of feature names
-        featureNames = []
-        # loop through all of the features associated with the constraint
-        for feature in self.features:
-            # add the feature name to the list of feature names
-            featureNames.append(feature.name)
         # print out the names and the constraint
-        print "Features = " + str(featureNames) + " Constraint = " + self.constraint
+        print self.tail.name + " " + self.constraint + " " + self.head.name
 
     def satisfied(self):
         """
@@ -58,100 +59,76 @@ class CSPConstraint:
 
 
 class CSPConstraintNotEqual(CSPConstraint):
-    def __init__(self, lstFeatures, strConstraint):
+    def __init__(self, ftrTail, strConstraint, ftrHead):
         # call the parent constructor
-        CSPConstraint.__init__(self, lstFeatures, strConstraint)
+        CSPConstraint.__init__(self, ftrTail, strConstraint, ftrHead)
 
     def satisfied(self):
         """
-        returns true if constraint is satisfied and false if it is not
+        returns true if head and tail features have the same value and false if they have
+        different values or one of the features does not have a value
         """
-        # loop through all the features in the constraint
-        for firstFeatureIndex in range(0,len(self.features)):
-            # get the value of the next feature in the constraint
-            firstFeatureValue = self.features[firstFeatureIndex].value
-            # if this feature is unassigned then move on to the next feature, otherwise compare it to all
-            # the features that come after it (we've already compared it to all the features that come
-            # before it)
-            if (firstFeatureValue != None):
-                # loop through all the features that come after this one in the constraint
-                for secondFeatureIndex in range(firstFeatureIndex+1, len(self.features)):
-                    # get the value of the second feature in the constraint
-                    secondFeatureValue = self.features[secondFeatureIndex].value
-                    # if the feature is unassigned then move on to the next feature, otherwise make the
-                    # comparison
-                    if (secondFeatureValue != None):
-                        # if both features are assigned and not equal then return false
-                        if (firstFeatureValue == secondFeatureValue):
-                            return False
-        # otherwise, all features are assigned different values so return true
-        return True
+        # if the head or the tail haven't been assigned, then the constraint is satisfied
+        if self.head.value == "none" or self.tail.value == "none":
+            return True
+        # if both the head and the tail have been assigned and they have different values
+        # then the constraint is satisfied
+        if self.head.value != self.tail.value:
+            return True
+        # otherwise, they have the same value so the constraint is not satisfied
+        return False
 
 
 class CSPConstraintQueens(CSPConstraint):
-    def __init__(self, lstFeatures, strConstraint, gridSize):
+    def __init__(self, ftrTail, strConstraint, ftrHead, gridSize):
         # call the parent constructor
-        CSPConstraint.__init__(self, lstFeatures, strConstraint)
+        CSPConstraint.__init__(self, ftrTail, strConstraint, ftrHead)
         # define the grid size (assume it's a square) based on the number of features
         # (one feature for each queen means one feature for each row)
-        self.gridSize = len(lstFeatures)
-        # each list within this list will contain all the indexes for
-        # a single diagonal on the board
-        # I need to replace this with something that works for any size board - right
-        # now this only works for 5x5 boards
-        self.diagonals = [
-            ['1', '5'],
-            ['2', '6', '10'],
-            ['3', '7', '11', '15'],
-            ['4', '8', '12', '16', '20'],
-            ['9', '13', '17', '21'],
-            ['14', '18', '22'],
-            ['19', '23'],
-            ['3', '9'],
-            ['2', '8', '14'],
-            ['1', '7', '13', '19'],
-            ['0', '6', '12', '18', '24'],
-            ['5', '11', '17', '23'],
-            ['10', '16', '22'],
-            ['15', '21']
-        ]
+        self.gridSize = gridSize
         # each list within this list will contain all the indexes for
         # a single column of the board
         self.columns = []
         # loop through all the columns in the board
-        for col in range(0, gridSize):
-            # start with an empty list
-            columnList = []
-            # loop through all the rows in the board
-            for row in range(0, gridSize):
-                # add the index of this row, col square
-                columnList.append(str(col + row * gridSize))
-            # add the list of indexes to the list of lists
-            self.columns.append(columnList)
+        for col in range(0, self.gridSize):
+            # each column has gridSize elements, each separated by gridSize items
+            self.columns.append(range(col, self.gridSize*self.gridSize, gridSize))
+        # each list within this list contains all the indexes for
+        # a single diagonal on the board
+        self.diagonals = []
+        for index in range(0, self.gridSize):
+            # diagonals starting in upper left corner and going to middle of grid
+            self.diagonals.append(range(index, index * self.gridSize + 1, self.gridSize - 1))
+            # diagonals starting in upper right corner and going to lower right corner
+            self.diagonals.append(range((index+1) * self.gridSize - 1, self.gridSize * self.gridSize - 1, self.gridSize - 1))
+            # diagonals starting in upper left corner and going to upper right corner
+            self.diagonals.append(range(index, self.gridSize * (self.gridSize - index), self.gridSize + 1))
+            # diagonals starting in upper left corner and going to lower left corner
+            self.diagonals.append(range(index * self.gridSize, self.gridSize * self.gridSize, self.gridSize + 1))
 
     def satisfied(self):
         """
         returns true if constraint is satisfied and false if it is not
         """
         # get position of first queen in constraint
-        firstQueen = self.features[0].value
+        firstQueen = self.tail.value
         # if the firstQueen value is unassigned then we're done
-        if firstQueen == None:
+        if firstQueen == "none":
             return True
         # get position of second queen in constraint
-        secondQueen = self.features[1].value
+        secondQueen = self.head.value
         # if the secondQueen value is unassigned then we're done
-        if secondQueen == None:
+        if secondQueen == "none":
             return True
         # loop through the list of column lists
         for columnList in self.columns:
             # if both features are assigned and in the same column then return false
-            if ((firstQueen in columnList) and (secondQueen in columnList)):
+            if ((int(firstQueen) in columnList) and (int(secondQueen) in columnList)):
                 return False
-        # loop through the list of column lists
+        # loop through the list of diagonal lists
         for diagonalList in self.diagonals:
             # if both features are assigned and in the same column then return false
-            if ((firstQueen in diagonalList) and (secondQueen in diagonalList)):
+            if ((int(firstQueen) in diagonalList) and (int(secondQueen) in diagonalList)):
                 return False
         # otherwise, all constraints are satisfied so return true
         return True
@@ -193,31 +170,36 @@ class CSPGraph:
         lstConstraints = []
         # loop through all constraints
         for constraint in self.constraints:
-            # loop through all the features effected by the constraint
-            for feature in constraint.features:
-                # if we have a match
-                if featureName == feature.name:
-                    # add the constraint to our list
-                    lstConstraints.append(constraint)
+            # if the feature name appears in the tail of the constraint
+            if featureName == constraint.tail.name:
+                # add the constraint to our list
+                lstConstraints.append(constraint)
+            # if the feature name appears in the head of the constraint
+            if featureName == constraint.head.name:
+                # add the constraint to our list
+                lstConstraints.append(constraint)
         # return out list of constraints
         return lstConstraints
 
-    def addConstraint(self, lstFeatureNames, strConstraint):
+    def addConstraint(self, ftrTail, strConstraint, ftrHead):
         # check: do all the variables exist?
         # check: does the constraint make sense?
-        # create an empty list of feature objects
-        lstFeatures = []
-        # loop through the list of feature names and add the corresponding
-        # feature objects to the list
-        for featureName in lstFeatureNames:
-            lstFeatures.append(self.getFeature(featureName))
         # create a new CSPConstraint object
+        global GRIDSIZE
         if (strConstraint == "!="):
-            newConstraint = CSPConstraintNotEqual(lstFeatures, strConstraint)
+            newConstraint = CSPConstraintNotEqual(self.getFeature(ftrTail), strConstraint, self.getFeature(ftrHead))
+            # put the new constraint in the graph's list of constraints
+            self.constraints.append(newConstraint)
+            newConstraint = CSPConstraintNotEqual(self.getFeature(ftrHead), strConstraint, self.getFeature(ftrTail))
+            # put the new constraint in the graph's list of constraints
+            self.constraints.append(newConstraint)
         elif (strConstraint == "Queens"):
-            newConstraint = CSPConstraintQueens(lstFeatures, strConstraint, 5)
-        # put the new constraint in the graph's list of constraints
-        self.constraints.append(newConstraint)
+            newConstraint = CSPConstraintQueens(self.getFeature(ftrTail), strConstraint, self.getFeature(ftrHead), GRIDSIZE)
+            # put the new constraint in the graph's list of constraints
+            self.constraints.append(newConstraint)
+            newConstraint = CSPConstraintQueens(self.getFeature(ftrHead), strConstraint, self.getFeature(ftrTail), GRIDSIZE)
+            # put the new constraint in the graph's list of constraints
+            self.constraints.append(newConstraint)
 
     def printGraph(self):
         print "-----"
@@ -230,7 +212,7 @@ class CSPGraph:
     def printSolution(self):
         print "----- Solution -----"
         for feature in self.features:
-            print "Name = " + feature.name + " Value = " + feature.value
+            print "Name = " + feature.name + " Value = " + str(feature.value)
 
     def satisfiesConstraints(self, feature):
         """
@@ -272,7 +254,8 @@ class CSPGraph:
                 self.backtrackingSearch(featureIndex+1)
             # move on to the next value within the domain
             domainIndex += 1
-
+        # reset the feature value to unassigned
+        nextFeature.value = "none"
 
 
 # create a csp graph
@@ -280,40 +263,34 @@ cspGraph = CSPGraph()
 
 
 # add some variables
-# cspGraph.addFeature('WA', ['red', 'green', 'blue'])
-# cspGraph.addFeature('NT', ['red', 'green', 'blue'])
-# cspGraph.addFeature('SA', ['red', 'green', 'blue'])
-# cspGraph.addFeature('Q', ['red', 'green', 'blue'])
-# cspGraph.addFeature('NSW', ['red', 'green', 'blue'])
-# cspGraph.addFeature('V', ['red', 'green', 'blue'])
-# cspGraph.addFeature('T', ['red', 'green', 'blue'])
-cspGraph.addFeature('Q1', ['0', '1', '2', '3', '4'])
-cspGraph.addFeature('Q2', ['5', '6', '7', '8', '9'])
-cspGraph.addFeature('Q3', ['10', '11', '12', '13', '14'])
-cspGraph.addFeature('Q4', ['15', '16', '17', '18', '19'])
-cspGraph.addFeature('Q5', ['20', '21', '22', '23', '24'])
+cspGraph.addFeature('WA', ['red', 'green', 'blue'])
+cspGraph.addFeature('NT', ['red', 'green', 'blue'])
+cspGraph.addFeature('SA', ['red', 'green', 'blue'])
+cspGraph.addFeature('Q', ['red', 'green', 'blue'])
+cspGraph.addFeature('NSW', ['red', 'green', 'blue'])
+cspGraph.addFeature('V', ['red', 'green', 'blue'])
+cspGraph.addFeature('T', ['red', 'green', 'blue'])
 
 
 # add some constraints
-# cspGraph.addConstraint(['WA', 'NT'], '!=')
-# cspGraph.addConstraint(['WA', 'SA'], '!=')
-# cspGraph.addConstraint(['Q', 'NT'], '!=')
-# cspGraph.addConstraint(['SA', 'NT'], '!=')
-# cspGraph.addConstraint(['SA', 'Q'], '!=')
-# cspGraph.addConstraint(['SA', 'NSW'], '!=')
-# cspGraph.addConstraint(['SA', 'V'], '!=')
-# cspGraph.addConstraint(['NSW', 'V'], '!=')
-# cspGraph.addConstraint(['Q', 'NSW'], '!=')
-cspGraph.addConstraint(['Q1', 'Q2'], 'Queens')
-cspGraph.addConstraint(['Q1', 'Q3'], 'Queens')
-cspGraph.addConstraint(['Q1', 'Q4'], 'Queens')
-cspGraph.addConstraint(['Q1', 'Q5'], 'Queens')
-cspGraph.addConstraint(['Q2', 'Q3'], 'Queens')
-cspGraph.addConstraint(['Q2', 'Q4'], 'Queens')
-cspGraph.addConstraint(['Q2', 'Q5'], 'Queens')
-cspGraph.addConstraint(['Q3', 'Q4'], 'Queens')
-cspGraph.addConstraint(['Q3', 'Q5'], 'Queens')
-cspGraph.addConstraint(['Q4', 'Q5'], 'Queens')
+cspGraph.addConstraint('WA', '!=', 'NT')
+cspGraph.addConstraint('WA', '!=', 'SA')
+cspGraph.addConstraint('Q', '!=', 'NT')
+cspGraph.addConstraint('SA', '!=', 'NT')
+cspGraph.addConstraint('SA', '!=', 'Q')
+cspGraph.addConstraint('SA', '!=', 'NSW')
+cspGraph.addConstraint('SA', '!=', 'V')
+cspGraph.addConstraint('NSW', '!=', 'V')
+cspGraph.addConstraint('Q', '!=', 'NSW')
+
+
+# for queen in range(0, GRIDSIZE):
+#     cspGraph.addFeature('Q'+str(queen), range(queen*GRIDSIZE, (queen+1)*GRIDSIZE))
+#
+# for q1 in range(0, GRIDSIZE):
+#     for q2 in range(q1+1, GRIDSIZE):
+#         cspGraph.addConstraint('Q'+str(q1), 'Queens', 'Q'+str(q2))
+
 
 #cspGraph.printGraph()
 
