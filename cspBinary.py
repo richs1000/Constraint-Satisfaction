@@ -259,17 +259,27 @@ class CSPGraph:
         """
         This function goes through the list of all constraints and removes the
         value assigned to tailFeature from the domain of each feature connected
-        to tail feature
+        to the tail feature
         """
         # get a list of constraints which have tailFeature in the tail
         lstConstraints = self.getTailConstraints(tailFeature.name)
         # loop through all of the relevant constraints
         for constraint in lstConstraints:
-            # check to see if the value of the tail feature is in the domain of the head
-            if tailFeature.value in constraint.head.domain:
-                # remove the value of tailFeature from the domain of the feature at
-                # the head of each constraint
-                constraint.head.domain.remove(tailFeature.value)
+            # check each value in the domain of the constraint's head feature to see if it conflicts
+            # with the value of the tail feature
+            # make a copy of the head domain to loop through
+            headDomain = constraint.head.domain[:]
+            for headValue in headDomain:
+                # if this value doesn't satisfy the constraint then remove the value from the domain
+                if (not constraint.satisfied(tailFeature.value, headValue)):
+                    # remove the value from the domain
+                    constraint.head.domain.remove(headValue)
+
+            # # check to see if the value of the tail feature is in the domain of the head
+            # if tailFeature.value in constraint.head.domain:
+            #     # remove the value of tailFeature from the domain of the feature at
+            #     # the head of each constraint
+            #     constraint.head.domain.remove(tailFeature.value)
 
     def arcConsistency(self, constraint):
         """
@@ -369,12 +379,14 @@ def backtrackingSearch(cspGraph, featureIndex):
         nextFeature.value = nextFeature.domain[domainIndex]
         # if the value satisfies all the constraints
         if cspGraph.satisfiesConstraints(nextFeature):
+            # make a copy of the cspGraph
+            cspGraphCopy = copy.deepcopy(cspGraph)
             # do forward checking
-            cspGraph.forwardChecking(nextFeature)
+            #cspGraphCopy.forwardChecking(nextFeature)
             # enforce arc consistency for the whole graph
-            #if (cspGraph.graphConsistency()):
-            # go to the next variable
-            backtrackingSearch(copy.deepcopy(cspGraph), featureIndex+1)
+            if (cspGraphCopy.graphConsistency()):
+                # go to the next variable
+                backtrackingSearch(cspGraphCopy, featureIndex+1)
             # move on to the next value within the domain
             domainIndex += 1
     # reset the feature value to unassigned and "unwind" backtracking by one level
@@ -383,41 +395,39 @@ def backtrackingSearch(cspGraph, featureIndex):
 
 
 def NQueens():
-# cspGraph.addFeature('WA', ['red', 'green', 'blue'])
     # create a csp graph
     cspGraph = CSPGraph()
 
 
     # add some variables
-    cspGraph.addFeature('NT', ['red', 'green', 'blue'])
-    cspGraph.addFeature('SA', ['red', 'green', 'blue'])
-    cspGraph.addFeature('Q', ['red', 'green', 'blue'])
-    cspGraph.addFeature('NSW', ['red', 'green', 'blue'])
-    cspGraph.addFeature('V', ['red', 'green', 'blue'])
-    cspGraph.addFeature('T', ['red', 'green', 'blue'])
-
-
-    # add some constraints
-    cspGraph.addConstraint('WA', '!=', 'NT')
-    cspGraph.addConstraint('WA', '!=', 'SA')
-    cspGraph.addConstraint('Q', '!=', 'NT')
-    cspGraph.addConstraint('SA', '!=', 'NT')
-    cspGraph.addConstraint('SA', '!=', 'Q')
-    cspGraph.addConstraint('SA', '!=', 'NSW')
-    cspGraph.addConstraint('SA', '!=', 'V')
-    cspGraph.addConstraint('NSW', '!=', 'V')
-    cspGraph.addConstraint('Q', '!=', 'NSW')
-
-
-    # for queen in range(0, GRIDSIZE):
-    #     cspGraph.addFeature('Q'+str(queen), range(queen*GRIDSIZE, (queen+1)*GRIDSIZE))
+    # cspGraph.addFeature('NSW', ['red', 'green', 'blue'])
+    # cspGraph.addFeature('V', ['red', 'green', 'blue'])
+    # cspGraph.addFeature('T', ['red', 'green', 'blue'])
+    # cspGraph.addFeature('WA', ['red', 'green', 'blue'])
+    # cspGraph.addFeature('NT', ['red', 'green', 'blue'])
+    # cspGraph.addFeature('SA', ['red', 'green', 'blue'])
+    # cspGraph.addFeature('Q', ['red', 'green', 'blue'])
     #
-    # for q1 in range(0, GRIDSIZE):
-    #     for q2 in range(q1+1, GRIDSIZE):
-    #         cspGraph.addConstraint('Q'+str(q1), 'Queens', 'Q'+str(q2))
+    #
+    # # add some constraints
+    # cspGraph.addConstraint('WA', '!=', 'NT')
+    # cspGraph.addConstraint('WA', '!=', 'SA')
+    # cspGraph.addConstraint('Q', '!=', 'NT')
+    # cspGraph.addConstraint('SA', '!=', 'NT')
+    # cspGraph.addConstraint('SA', '!=', 'Q')
+    # cspGraph.addConstraint('SA', '!=', 'NSW')
+    # cspGraph.addConstraint('SA', '!=', 'V')
+    # cspGraph.addConstraint('NSW', '!=', 'V')
+    # cspGraph.addConstraint('Q', '!=', 'NSW')
 
 
-    #cspGraph.printGraph()
+    for queen in range(0, GRIDSIZE):
+        cspGraph.addFeature('Q'+str(queen), range(queen*GRIDSIZE, (queen+1)*GRIDSIZE))
+
+    for q1 in range(0, GRIDSIZE):
+        for q2 in range(q1+1, GRIDSIZE):
+            cspGraph.addConstraint('Q'+str(q1), 'Queens', 'Q'+str(q2))
+
 
     # call backtracking search
     backtrackingSearch(cspGraph, 0)
