@@ -50,7 +50,7 @@ class CSPConstraint:
         # print out the names and the constraint
         print self.tail.name + " " + self.constraint + " " + self.head.name
 
-    def satisfied(self):
+    def satisfied(self, tailValue, headValue):
         """
         Returns true if constraint is satisfied and false if it is not. This
         gets replaced in the sub-classes that define each constraint.
@@ -63,17 +63,17 @@ class CSPConstraintNotEqual(CSPConstraint):
         # call the parent constructor
         CSPConstraint.__init__(self, ftrTail, strConstraint, ftrHead)
 
-    def satisfied(self):
+    def satisfied(self, tailValue, headValue):
         """
         returns true if head and tail features have the same value and false if they have
         different values or one of the features does not have a value
         """
         # if the head or the tail haven't been assigned, then the constraint is satisfied
-        if self.head.value == "none" or self.tail.value == "none":
+        if headValue == "none" or tailValue == "none":
             return True
         # if both the head and the tail have been assigned and they have different values
         # then the constraint is satisfied
-        if self.head.value != self.tail.value:
+        if headValue != tailValue:
             return True
         # otherwise, they have the same value so the constraint is not satisfied
         return False
@@ -106,17 +106,19 @@ class CSPConstraintQueens(CSPConstraint):
             # diagonals starting in upper left corner and going to lower left corner
             self.diagonals.append(range(index * self.gridSize, self.gridSize * self.gridSize, self.gridSize + 1))
 
-    def satisfied(self):
+    def satisfied(self, tailValue, headValue):
         """
         returns true if constraint is satisfied and false if it is not
         """
         # get position of first queen in constraint
-        firstQueen = self.tail.value
+        #firstQueen = self.tail.value
+        firstQueen = tailValue
         # if the firstQueen value is unassigned then we're done
         if firstQueen == "none":
             return True
         # get position of second queen in constraint
-        secondQueen = self.head.value
+        #secondQueen = self.head.value
+        secondQueen = headValue
         # if the secondQueen value is unassigned then we're done
         if secondQueen == "none":
             return True
@@ -127,11 +129,12 @@ class CSPConstraintQueens(CSPConstraint):
                 return False
         # loop through the list of diagonal lists
         for diagonalList in self.diagonals:
-            # if both features are assigned and in the same column then return false
+            # if both features are assigned and in the same diagonal then return false
             if ((int(firstQueen) in diagonalList) and (int(secondQueen) in diagonalList)):
                 return False
         # otherwise, all constraints are satisfied so return true
         return True
+
 
 class CSPGraph:
     def __init__(self):
@@ -148,8 +151,6 @@ class CSPGraph:
         """
         Add a new variable to the list of variables
         """
-        # check: does the variable already exist?
-        # check: is the domain empty?
         # create a new variable CSPVariable object
         newFeature = CSPFeature(strName, lstDomain)
         # put the new variable in the graph's list of variables
@@ -178,7 +179,31 @@ class CSPGraph:
             if featureName == constraint.head.name:
                 # add the constraint to our list
                 lstConstraints.append(constraint)
-        # return out list of constraints
+        # return our list of constraints
+        return lstConstraints
+
+    def getTailConstraints(self, featureName):
+        # start with an empty list of constraints
+        lstConstraints = []
+        # loop through all constraints
+        for constraint in self.constraints:
+            # if the feature name appears in the tail of the constraint
+            if featureName == constraint.tail.name:
+                # add the constraint to our list
+                lstConstraints.append(constraint)
+        # return our list of constraints
+        return lstConstraints
+
+    def getHeadConstraints(self, featureName):
+        # start with an empty list of constraints
+        lstConstraints = []
+        # loop through all constraints
+        for constraint in self.constraints:
+            # if the feature name appears in the tail of the constraint
+            if featureName == constraint.head.name:
+                # add the constraint to our list
+                lstConstraints.append(constraint)
+        # return our list of constraints
         return lstConstraints
 
     def addConstraint(self, ftrTail, strConstraint, ftrHead):
@@ -223,10 +248,96 @@ class CSPGraph:
         lstConstraints = self.getConstraints(feature.name)
         # loop through all of the relevant constraints
         for constraint in lstConstraints:
-            if (not constraint.satisfied()):
+            if (not constraint.satisfied(constraint.tail.value, constraint.head.value)):
                 return False
         # no violations, so return true
         return True
+
+    def forwardChecking(self, tailFeature):
+        """
+        This function goes through the list of all constraints and removes the
+        value assigned to tailFeature from the domain of each feature connected
+        to tail feature
+        """
+        # get a list of constraints which have tailFeature in the tail
+        lstConstraints = self.getTailConstraints(tailFeature.name)
+        # loop through all of the relevant constraints
+        for constraint in lstConstraints:
+            # check to see if the value of the tail feature is in the domain of the head
+            if tailFeature.value in constraint.head.domain:
+                # remove the value of tailFeature from the domain of the feature at
+                # the head of each constraint
+                constraint.head.domain.remove(tailFeature.value)
+
+    def arcConsistency(self, constraint):
+        """
+        This function checks an individual arc for consistency, and then removes values
+        from the domain of the tail feature if the arc is not consistent
+        """
+        # start out assuming the constraint is satisfied
+        satisfied = True
+        # if the tail is assigned then we don't need to do anything
+        if (constraint.tail.value != "none"):
+            # the arc is consistent
+            return satisfied
+        # if the head is assigned a value then we compare the tail domain to the assigned value
+        if (constraint.head.value != "none"):
+            # make a copy of the tail domain to loop through
+            tailDomain = constraint.tail.domain[:]
+            # loop through all values in the tail domain
+            for tailValue in tailDomain:
+                # if this value doesn't satisfy the constraint then remove the value from the domain
+                if (not constraint.satisfied(tailValue, constraint.head.value)):
+                    # record that the constraint wasn't satisfied
+                    satisfied = False
+                    # remove the value from the domain
+                    constraint.tail.domain.remove(tailValue)
+            # return whether or not the constraint was satisfied
+            return satisfied
+        # if the head is not assigned a value then we compare the tail domain to each value in the head domain
+        # start assuming the tail domain has not been modified
+        domainModified = False
+        # loop through all values in the tail domain
+        for tailValue in constraint.tail.domain:
+            # start out assuming the constraint is not satisfied
+            satisfied = False
+            # loop through all values in the head domain
+            for headValue in constraint.head.domain:
+                # does this value satisfy the constraint
+                if (constraint.satisfied(tailValue, headValue)):
+                    # record that the constraint wasn't satisfied
+                    satisfied = True
+            # if we didn't find a value in the head that works with the tail value
+            if (not satisfied):
+                # remove the tail value from the domain
+                constraint.tail.domain.remove(tailValue)
+                # mark that we removed something from the tail domain
+                domainModified = True
+        # return whether or not the constraint was satisfied
+        return (not domainModified)
+
+    def graphConsistency(self):
+        """
+        This function creates a list of all the constraints in the graph, and enforces
+        arc consistency for each one
+        """
+        # make a copy of the constraints list - we will treat this like a stack
+        constraintList = self.constraints[:]
+        # loop through all the constraints
+        while len(constraintList) > 0:
+            # grab a constraint off the stack
+            constraint = constraintList.pop()
+            # check the constraint for arc consistency
+            consistent = self.arcConsistency(constraint)
+            # if the arc wasn't consistent then we need to add back all the constraints
+            # with a head equal to the tail of the changed constraint
+            if (not consistent):
+                # get a list of constraints
+                reCheckConstraints = self.getHeadConstraints(constraint.tail.name)
+                # go through the list, add back all constraints that are not already in the stack
+                for c in reCheckConstraints:
+                    if not c in constraintList:
+                        constraintList.insert(0, c)
 
     def backtrackingSearch(self, featureIndex):
         """
@@ -250,11 +361,15 @@ class CSPGraph:
             nextFeature.value = nextFeature.domain[domainIndex]
             # if the value satisfies all the constraints
             if self.satisfiesConstraints(nextFeature):
+                # do forward checking
+                #self.forwardChecking(nextFeature)
+                # enforce arc consistency for the whole graph
+                self.graphConsistency()
                 # go to the next variable
                 self.backtrackingSearch(featureIndex+1)
             # move on to the next value within the domain
             domainIndex += 1
-        # reset the feature value to unassigned
+        # reset the feature value to unassigned and "unwind" backtracking by one level
         nextFeature.value = "none"
 
 
@@ -262,34 +377,34 @@ class CSPGraph:
 cspGraph = CSPGraph()
 
 
-# add some variables
-cspGraph.addFeature('WA', ['red', 'green', 'blue'])
-cspGraph.addFeature('NT', ['red', 'green', 'blue'])
-cspGraph.addFeature('SA', ['red', 'green', 'blue'])
-cspGraph.addFeature('Q', ['red', 'green', 'blue'])
-cspGraph.addFeature('NSW', ['red', 'green', 'blue'])
-cspGraph.addFeature('V', ['red', 'green', 'blue'])
-cspGraph.addFeature('T', ['red', 'green', 'blue'])
-
-
-# add some constraints
-cspGraph.addConstraint('WA', '!=', 'NT')
-cspGraph.addConstraint('WA', '!=', 'SA')
-cspGraph.addConstraint('Q', '!=', 'NT')
-cspGraph.addConstraint('SA', '!=', 'NT')
-cspGraph.addConstraint('SA', '!=', 'Q')
-cspGraph.addConstraint('SA', '!=', 'NSW')
-cspGraph.addConstraint('SA', '!=', 'V')
-cspGraph.addConstraint('NSW', '!=', 'V')
-cspGraph.addConstraint('Q', '!=', 'NSW')
-
-
-# for queen in range(0, GRIDSIZE):
-#     cspGraph.addFeature('Q'+str(queen), range(queen*GRIDSIZE, (queen+1)*GRIDSIZE))
+# # add some variables
+# cspGraph.addFeature('WA', ['red', 'green', 'blue'])
+# cspGraph.addFeature('NT', ['red', 'green', 'blue'])
+# cspGraph.addFeature('SA', ['red', 'green', 'blue'])
+# cspGraph.addFeature('Q', ['red', 'green', 'blue'])
+# cspGraph.addFeature('NSW', ['red', 'green', 'blue'])
+# cspGraph.addFeature('V', ['red', 'green', 'blue'])
+# cspGraph.addFeature('T', ['red', 'green', 'blue'])
 #
-# for q1 in range(0, GRIDSIZE):
-#     for q2 in range(q1+1, GRIDSIZE):
-#         cspGraph.addConstraint('Q'+str(q1), 'Queens', 'Q'+str(q2))
+#
+# # add some constraints
+# cspGraph.addConstraint('WA', '!=', 'NT')
+# cspGraph.addConstraint('WA', '!=', 'SA')
+# cspGraph.addConstraint('Q', '!=', 'NT')
+# cspGraph.addConstraint('SA', '!=', 'NT')
+# cspGraph.addConstraint('SA', '!=', 'Q')
+# cspGraph.addConstraint('SA', '!=', 'NSW')
+# cspGraph.addConstraint('SA', '!=', 'V')
+# cspGraph.addConstraint('NSW', '!=', 'V')
+# cspGraph.addConstraint('Q', '!=', 'NSW')
+
+
+for queen in range(0, GRIDSIZE):
+    cspGraph.addFeature('Q'+str(queen), range(queen*GRIDSIZE, (queen+1)*GRIDSIZE))
+
+for q1 in range(0, GRIDSIZE):
+    for q2 in range(q1+1, GRIDSIZE):
+        cspGraph.addConstraint('Q'+str(q1), 'Queens', 'Q'+str(q2))
 
 
 #cspGraph.printGraph()
