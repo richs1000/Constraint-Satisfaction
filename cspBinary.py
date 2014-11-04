@@ -26,6 +26,8 @@ FORWARD_CHECKING = False
 # This flag is used to turn on arc consistency
 ARC_CONSISTENCY = True
 
+# This flag is used to turn on variable ordering
+VARIABLE_ORDERING = True
 
 class CSPFeature:
     def __init__(self, strName, lstDomain):
@@ -411,14 +413,64 @@ class CSPGraph:
                         constraintList.insert(0, c)
         return True
 
+    def getOpenConstraints(self, featureName):
+        """
+        Returns a lists of constraints that have the feature name in either
+        the head or the tail and an unassigned feature in the other half of
+        the constraint. This is used in mostConstrainingFeature()
+        """
+        # start with an empty list of constraints
+        lstConstraints = []
+        # loop through all constraints
+        for constraint in self.constraints:
+            # if the feature name appears in the tail of the constraint and the head constraint
+            # is unassigned
+            if (featureName == constraint.tail.name) and (constraint.head.value == 'none'):
+                # add the constraint to our list
+                lstConstraints.append(constraint)
+            # if the feature name appears in the head of the constraint and the tail constraint
+            # is unassigned
+            if (featureName == constraint.head.name) and (constraint.tail.value == 'none'):
+                # add the constraint to our list
+                lstConstraints.append(constraint)
+        # return our list of constraints
+        return lstConstraints
+
+    def mostConstrainingFeature(self):
+        """
+        Choose the feature with the most constraints on remaining unassigned features
+        """
+        # keep track of which feature we'll choose next
+        nextFeature = None
+        # a counter for the minimum number of constraints
+        maxCount = -1
+        # loop through all the features
+        for feature in self.features:
+            # if this feature has a value then go back to the top of the loop and get
+            # the next feature
+            if (feature.value != 'none'):
+                continue
+            # get a list of all the constraints involving this feature
+            constraintList = self.getOpenConstraints(feature.name)
+            # compare the number of constraints involving this feature to the current max
+            # if this is the first unassigned feature we found or this feature has the most
+            # constraints we've found...
+            if (len(constraintList) > maxCount):
+                # save a pointer to the current feature with most constraints
+                nextFeature = feature
+                # save the max number of constraints
+                maxCount = len(constraintList)
+        # return the least constraining feature
+        return nextFeature
+
 def backtrackingSearch(cspGraph, featureIndex):
     """
     Backtracking search with forward checking and arc consistency
     """
-    # access the forward checking flag
+    # access global variables
     global FORWARD_CHECKING
-    # access the arc consistency flag
     global ARC_CONSISTENCY
+    global VARIABLE_ORDERING
     # if the variableIndex exceeds the total number of variables then
     # we've found an assignment for each variable and we're done
     if (featureIndex >= len(cspGraph.features)):
@@ -427,7 +479,10 @@ def backtrackingSearch(cspGraph, featureIndex):
         # return True
         exit()
     # pick a feature f to assign next
-    nextFeature = cspGraph.features[featureIndex]
+    if (VARIABLE_ORDERING):
+        nextFeature = cspGraph.mostConstrainingFeature()
+    else:
+        nextFeature = cspGraph.features[featureIndex]
     # start with the first value in the feature's domain
     domainIndex = 0
     # loop until we find a solution or we run out of values in
