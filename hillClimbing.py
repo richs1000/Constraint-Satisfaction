@@ -1,3 +1,6 @@
+__author__ = 'rsimpson'
+
+
 #
 # Rich Simpson
 # Nov 1, 2014
@@ -8,6 +11,7 @@
 __author__ = 'rsimpson'
 
 import copy
+import random
 
 NUMBER_OF_WEEKS = 4
 GAMES_PER_WEEK = 16
@@ -268,7 +272,7 @@ nflGames = {
     '252':{'Away':'Giants', 'Home':'Seahawks','Conference':'NFC','TimeZone':'Pacific'},
     '253':{'Away':'Packers', 'Home':'Seahawks','Conference':'NFC','TimeZone':'Pacific'},
     '254':{'Away':'Raiders', 'Home':'Seahawks','Conference':'AFC','TimeZone':'Pacific'},
-    '255':{'Away':'Rams', 'Home':'Seahawks','Conference':'NFC','TimeZone':'Pacific'},    
+    '255':{'Away':'Rams', 'Home':'Seahawks','Conference':'NFC','TimeZone':'Pacific'},
 }
 
 # This value is used to determine the size of the board when doing an n-queens problem
@@ -290,6 +294,10 @@ ARC_CONSISTENCY = True
 
 # This flag is used to turn on variable ordering
 VARIABLE_ORDERING = True
+
+# This variable sets the limit for how many comparisons can be made before we give up
+# on finding a better neighbor in hill-climbing search
+COMPARISON_LIMIT = 1000
 
 class CSPFeature:
     def __init__(self, strName, lstDomain):
@@ -665,7 +673,7 @@ class CSPGraph:
         constraintList = headConstraints[:]
         # loop through all the constraints
         while len(constraintList) > 0:
-            if (len(constraintList) % 100 == 0):
+            if (len(constraintList) % 10 == 0):
                 print "\tconsistency checking constraints = " + str(len(constraintList))
             # grab a constraint off the stack
             constraint = constraintList.pop()
@@ -738,6 +746,100 @@ class CSPGraph:
         # return the least constraining feature
         return nextFeature
 
+    def allConstraintsSatisfied(self):
+        """
+        This function tests all the features against all of the constraints. It
+        returns true if the current set of feature assignments does not violate any
+        of the constraints.
+        """
+        # loop through all of the constraints
+        for constraint in self.constraints:
+            # if any of the constraints are not satisfied, then return False
+            if (not constraint.satisfied(constraint.tail.value, constraint.head.value)):
+                return False
+        # no violations, so return true
+        return True
+
+    def randomSolution(self):
+        """
+        This chooses a value for each feature randomly
+        """
+        # seed the random number generator
+        random.seed()
+        # loop through all the features
+        for feature in self.features:
+            # pick a random number based on the size of the feature's domain
+            domainIndex = random.randint(0, len(feature.domain) - 1)
+            # assign the value from the domain
+            feature.value = feature.domain[domainIndex]
+
+    def objectiveFunction(self):
+        """
+        Returns a measure of how 'good' the current solution is
+        """
+        # start at zero
+        satisfiedConstraints = 0
+        # loop through all of the constraints
+        for constraint in self.constraints:
+            # if the constraint is satisfied, then increase the count
+            if (constraint.satisfied(constraint.tail.value, constraint.head.value)):
+                satisfiedConstraints += 1
+        # return the count of satisfied constraints
+        return satisfiedConstraints
+
+    def pickANeighbor(self):
+        """
+        Choose a random feature and a random value for that feature.
+        """
+        # pick a random feature
+        featureIndex = random.randint(0, len(self.features) - 1)
+        # get a pointer to that feature
+        feature = self.features[featureIndex]
+        # pick a random number based on the size of the feature's domain
+        domainIndex = random.randint(0, len(feature.domain) - 1)
+        # assign the value from the domain
+        feature.value = feature.domain[domainIndex]
+
+
+def hillClimbingSearch(cspGraph):
+    # access global variable
+    global COMPARISON_LIMIT
+    # keep track of number of times through the loop
+    loopCount = 0
+    # pick a random solution
+    cspGraph.randomSolution()
+    # print solution
+    print "starting solution"
+    cspGraph.printSolution()
+    # keep track of how many neighbors have been compared to the current maximum
+    neighborComparisons = 0
+    # keep looping until you hit a local maximum
+    while (not cspGraph.allConstraintsSatisfied() and neighborComparisons < COMPARISON_LIMIT):
+        # increment the loop count
+        loopCount += 1
+        # make a copy of the cspGraph
+        cspGraphCopy = copy.deepcopy(cspGraph)
+        # get a neighboring solution
+        cspGraphCopy.pickANeighbor()
+        # if we found a better solution, then start over with the new solution
+        if cspGraphCopy.objectiveFunction() > cspGraph.objectiveFunction():
+            # reset the number of neighbor comparisons
+            neighborComparisons = 0
+            # update the value of cspGraph
+            cspGraph = copy.deepcopy(cspGraphCopy)
+        # otherwise, increment the number of neighbor comparisons and try again
+        else:
+            neighborComparisons += 1
+        if (loopCount % 50 == 0):
+            print "loopCount = " + str(loopCount) + "\tcomparisons = " + str(neighborComparisons)
+    # print solution
+    if cspGraph.allConstraintsSatisfied():
+        print "found a solution"
+    else:
+        print "I stopped here:"
+    cspGraph.printSolution()
+
+
 def backtrackingSearch(cspGraph, featureIndex):
     """
     Backtracking search with forward checking and arc consistency
@@ -764,7 +866,7 @@ def backtrackingSearch(cspGraph, featureIndex):
     # the domain of f
     while domainIndex < len(nextFeature.domain):
         print "feature index = " + str(featureIndex)
-        if (domainIndex % 5 == 0 or featureIndex > 50):
+        if (domainIndex % 5 == 0 or featureIndex == 51):
             print "\tdomain index = " + str(domainIndex)
         # pick a value for the feature
         nextFeature.value = nextFeature.domain[domainIndex]
@@ -810,7 +912,8 @@ def NQueens():
             cspGraph.addConstraint('Q'+str(q1), 'Queens', 'Q'+str(q2))
 
     # call backtracking search
-    backtrackingSearch(cspGraph, 0)
+    #backtrackingSearch(cspGraph, 0)
+    hillClimbingSearch(cspGraph)
 
 
 def MapColoring():
@@ -838,8 +941,8 @@ def MapColoring():
     cspGraph.addConstraint('Q', '!=', 'NSW')
 
     # call backtracking search
-    backtrackingSearch(cspGraph, 0)
-
+    #backtrackingSearch(cspGraph, 0)
+    hillClimbingSearch(cspGraph)
 
 class CSPConstraintNotEqualHomeAway(CSPConstraint):
     def __init__(self, ftrTail, strConstraint, ftrHead):
@@ -919,6 +1022,6 @@ def NFLSchedule():
 
 
 
-#NQueens()
+NQueens()
 #MapColoring()
-NFLSchedule()
+#NFLSchedule()
