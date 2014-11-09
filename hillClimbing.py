@@ -299,6 +299,10 @@ VARIABLE_ORDERING = True
 # on finding a better neighbor in hill-climbing search
 COMPARISON_LIMIT = 1000
 
+# This variable sets the limit for the total number of times through the hill-climbing
+# loop before we give up
+LOOP_LIMIT = 10000
+
 class CSPFeature:
     def __init__(self, strName, lstDomain):
         """
@@ -789,21 +793,25 @@ class CSPGraph:
 
     def pickANeighbor(self):
         """
-        Choose a random feature and a random value for that feature.
+        Choose a feature and increment its value
         """
         # pick a random feature
         featureIndex = random.randint(0, len(self.features) - 1)
         # get a pointer to that feature
         feature = self.features[featureIndex]
         # pick a random number based on the size of the feature's domain
-        domainIndex = random.randint(0, len(feature.domain) - 1)
+        domainIncrement = random.randint(0, len(feature.domain) - 1)
+        # get the index within the domain of the current feature value
+        domainIndex = feature.domain.index(feature.value)
+        # go to a different value in the domain
+        domainIndex = (domainIndex + domainIncrement) % len(feature.domain)
         # assign the value from the domain
         feature.value = feature.domain[domainIndex]
 
 
 def hillClimbingSearch(cspGraph):
-    # access global variable
-    global COMPARISON_LIMIT
+    # access global variables
+    global COMPARISON_LIMIT, LOOP_LIMIT
     # keep track of number of times through the loop
     loopCount = 0
     # pick a random solution
@@ -814,7 +822,7 @@ def hillClimbingSearch(cspGraph):
     # keep track of how many neighbors have been compared to the current maximum
     neighborComparisons = 0
     # keep looping until you hit a local maximum
-    while (not cspGraph.allConstraintsSatisfied() and neighborComparisons < COMPARISON_LIMIT):
+    while (not cspGraph.allConstraintsSatisfied() and neighborComparisons < COMPARISON_LIMIT and loopCount < LOOP_LIMIT):
         # increment the loop count
         loopCount += 1
         # make a copy of the cspGraph
@@ -822,16 +830,16 @@ def hillClimbingSearch(cspGraph):
         # get a neighboring solution
         cspGraphCopy.pickANeighbor()
         # if we found a better solution, then start over with the new solution
-        if cspGraphCopy.objectiveFunction() > cspGraph.objectiveFunction():
+        if cspGraphCopy.objectiveFunction() >= cspGraph.objectiveFunction():
+            print "total constraints = " + str(len(cspGraph.constraints)) + " obj1 = " + str(cspGraphCopy.objectiveFunction()) + " obj2 = " + str(cspGraph.objectiveFunction())
+            print "swapping..."
             # reset the number of neighbor comparisons
             neighborComparisons = 0
             # update the value of cspGraph
             cspGraph = copy.deepcopy(cspGraphCopy)
-        # otherwise, increment the number of neighbor comparisons and try again
+            # otherwise, increment the number of neighbor comparisons and try again
         else:
             neighborComparisons += 1
-        if (loopCount % 50 == 0):
-            print "loopCount = " + str(loopCount) + "\tcomparisons = " + str(neighborComparisons)
     # print solution
     if cspGraph.allConstraintsSatisfied():
         print "found a solution"
@@ -1016,12 +1024,14 @@ def NFLSchedule():
                 cspGraph.addConstraint(str(pos1), 'NotEqualHomeAway', str(pos2))
 
     # call backtracking search
-    print "starting backtracking..."
-    backtrackingSearch(cspGraph, 0)
+    # print "starting backtracking..."
+    # backtrackingSearch(cspGraph, 0)
+
+    print "starting hill climbing"
+    hillClimbingSearch(cspGraph)
 
 
 
-
-NQueens()
+#NQueens()
 #MapColoring()
-#NFLSchedule()
+NFLSchedule()
