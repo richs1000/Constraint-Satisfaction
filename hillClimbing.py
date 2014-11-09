@@ -276,7 +276,7 @@ nflGames = {
 }
 
 # This value is used to determine the size of the board when doing an n-queens problem
-GRIDSIZE = 8
+GRIDSIZE = 20
 
 # This is a list of lists - where each sub-list contains the indices that are in the
 # same column.
@@ -301,7 +301,7 @@ COMPARISON_LIMIT = 1000
 
 # This variable sets the limit for the total number of times through the hill-climbing
 # loop before we give up
-LOOP_LIMIT = 10000
+LOOP_LIMIT = 20000
 
 class CSPFeature:
     def __init__(self, strName, lstDomain):
@@ -804,10 +804,11 @@ class CSPGraph:
         # get the index within the domain of the current feature value
         domainIndex = feature.domain.index(feature.value)
         # go to a different value in the domain
-        domainIndex = (domainIndex + domainIncrement) % len(feature.domain)
+        newDomainIndex = (domainIndex + domainIncrement) % len(feature.domain)
         # assign the value from the domain
-        feature.value = feature.domain[domainIndex]
-
+        feature.value = feature.domain[newDomainIndex]
+        # return the feature and value that changed
+        return (featureIndex, domainIndex)
 
 def hillClimbingSearch(cspGraph):
     # access global variables
@@ -825,21 +826,27 @@ def hillClimbingSearch(cspGraph):
     while (not cspGraph.allConstraintsSatisfied() and neighborComparisons < COMPARISON_LIMIT and loopCount < LOOP_LIMIT):
         # increment the loop count
         loopCount += 1
-        # make a copy of the cspGraph
-        cspGraphCopy = copy.deepcopy(cspGraph)
+        # get the current objective function value
+        oldObjectiveValue = cspGraph.objectiveFunction()
         # get a neighboring solution
-        cspGraphCopy.pickANeighbor()
+        oldValueTuple = cspGraph.pickANeighbor()
         # if we found a better solution, then start over with the new solution
-        if cspGraphCopy.objectiveFunction() >= cspGraph.objectiveFunction():
-            print "total constraints = " + str(len(cspGraph.constraints)) + " obj1 = " + str(cspGraphCopy.objectiveFunction()) + " obj2 = " + str(cspGraph.objectiveFunction())
+        if cspGraph.objectiveFunction() >= oldObjectiveValue:
+            print "total constraints = " + str(len(cspGraph.constraints)) + " obj1 = " + str(oldObjectiveValue) + " obj2 = " + str(cspGraph.objectiveFunction())
             print "swapping..."
             # reset the number of neighbor comparisons
             neighborComparisons = 0
-            # update the value of cspGraph
-            cspGraph = copy.deepcopy(cspGraphCopy)
-            # otherwise, increment the number of neighbor comparisons and try again
+        # otherwise, restore the old values and try again
         else:
+            # increment the number of neighbor comparisons
             neighborComparisons += 1
+            # get the index of the feature that was changed
+            oldFeature = oldValueTuple[0]
+            # get the old value for that feature
+            oldValue = oldValueTuple[1]
+            # restore that value
+            cspGraph.features[oldFeature].value = cspGraph.features[oldFeature].domain[oldValue]
+
     # print solution
     if cspGraph.allConstraintsSatisfied():
         print "found a solution"
