@@ -114,6 +114,7 @@ class Population:
             self.generation.put(chromosome)
 
     def foundAWinner(self,goal):
+        foundWinner = False
         # create an empty priority queue
         newGeneration = PriorityQueue()
         # go through all the chromosomes in the current generation and call the mutate function on each
@@ -122,13 +123,17 @@ class Population:
             chromosome = self.generation.get()
             # see if this matches
             if chromosome.fitnessFunction(goal) == 0:
-                return (True, chromosome)
+                foundWinner = True
+                winner = chromosome
             # put the chromosome in the new generation
             newGeneration.put(chromosome)
         # keep the new generation
         self.generation = newGeneration
         # report that we haven't found a winner yet
-        return (False, 'nuts')
+        if (foundWinner):
+            return (True, winner.genes)
+        else:
+            return (False, 'nuts')
 
     def printPopulation(self):
         # create an empty priority queue
@@ -152,7 +157,7 @@ class Chromosome:
         """
         # each chromosome is a collection of individual 'genes' that make up
         # the solution
-        self.value = []
+        self.genes = []
         # how many 'genes' in each chromosome?
         self.length = 10
         # choose random values for the chromosome
@@ -163,7 +168,7 @@ class Chromosome:
         self.survivalProbability = 0
 
     def printChromosome(self):
-        print "value = " + str(self.value)
+        print "value = " + str(self.genes)
         print "fitness = " + str(self.fitness)
 
     def __cmp__(self, other):
@@ -179,7 +184,7 @@ class Chromosome:
         choose random values for the chromosome
         """
         for index in range(0, self.length):
-            self.value.append(chr(random.randint(0, 25) + 65))
+            self.genes.append(chr(random.randint(0, 25) + 65))
 
     def fitnessFunction(self, goal):
         """
@@ -188,7 +193,7 @@ class Chromosome:
         """
         fitness = 0
         for i in range(0, len(goal)):
-            fitness += (ord(self.value[i]) - ord(goal[i])) * (ord(self.value[i]) - ord(goal[i]))
+            fitness += (ord(self.genes[i]) - ord(goal[i])) * (ord(self.genes[i]) - ord(goal[i]))
         return fitness
 
     def crossOver(self, other):
@@ -197,12 +202,12 @@ class Chromosome:
         chromosomes
         """
         # find the mid-point
-        pivot = random.randint(0, len(self.value))
+        pivot = random.randint(0, len(self.genes))
         # swap the values around the mid-point
-        newChrom1 = self.value[0:pivot] + other.value[pivot:other.length]
-        newChrom2 = other.value[0:pivot] + self.value[pivot:self.length]
+        newChrom1 = self.genes[0:pivot] + other.genes[pivot:other.length]
+        newChrom2 = other.genes[0:pivot] + self.genes[pivot:self.length]
         # replace the old chromosomes with the mutated pair
-        self.value = newChrom1
+        self.genes = newChrom1
         other.value = newChrom2
 
     def mutate(self, mutationProbability):
@@ -210,16 +215,16 @@ class Chromosome:
         if (random.random() > mutationProbability):
             return
         # choose a random gene
-        gene = random.randint(0, len(self.value)-1)
+        gene = random.randint(0, len(self.genes)-1)
         # choose whether to add or subtract
         multiplier = 1
         if random.randint(0, 1) == 1:
             multiplier = -1
         # mutate the gene by adding or subtracting one
-        newValue = ord(self.value[gene])
+        newValue = ord(self.genes[gene])
         newValue += multiplier * 1
         # store new gene value
-        self.value[gene] = chr(newValue)
+        self.genes[gene] = chr(newValue)
 
 def geneticAlgorithm():
     # create an initial population
@@ -229,9 +234,8 @@ def geneticAlgorithm():
     while (loopCount < 10000):
         winnerTuple = pop.foundAWinner('HELLOWORLD')
         if (winnerTuple[0]):
-            print "done!"
-            pop.printPopulation()
-            return winnerTuple[1]
+            print "winner = " + str(winnerTuple[1])
+            return
         # selection
         pop.selection()
         # crossover
@@ -242,6 +246,5 @@ def geneticAlgorithm():
         loopCount += 1
         if (loopCount % 100 == 0):
             print "loop count = " + str(loopCount)
-            pop.printPopulation()
 
 geneticAlgorithm()
