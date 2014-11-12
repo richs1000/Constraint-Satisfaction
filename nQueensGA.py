@@ -1,7 +1,7 @@
 __author__ = 'rsimpson'
 
 import random
-from geneticAlgorithmTwo import *
+from geneticAlgorithm import *
 
 # This value is used to determine the size of the board when doing an n-queens problem
 GRIDSIZE = 5

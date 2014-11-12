@@ -1,6 +1,6 @@
 __author__ = 'rsimpson'
 
-from simulatedAnnealing import *
+from constraintSatisfaction import *
 
 # This value is used to determine the size of the board when doing an n-queens problem
 GRIDSIZE = 5

@@ -1,7 +1,7 @@
 __author__ = 'rsimpson'
 
 
-from simulatedAnnealing import *
+from constraintSatisfaction import *
 
 # how many weeks in the season?
 NUMBER_OF_WEEKS = 4

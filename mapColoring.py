@@ -1,6 +1,6 @@
 __author__ = 'rsimpson'
 
-from simulatedAnnealing import *
+from constraintSatisfaction import *
 
 
 class CSPGraphMapColoring(CSPGraph):
