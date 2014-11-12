@@ -6,6 +6,82 @@ import copy
 from Queue import PriorityQueue
 
 
+class Gene:
+    def __init__(self):
+        self.value = None
+
+    def printGene(self):
+        print "value = " + str(self.value)
+
+    def randomInit(self):
+        pass
+
+
+class Chromosome:
+    def __init__(self, length):
+        """
+        Each chromosome represents a single potential solution
+        """
+        # each chromosome is a collection of individual 'genes' that make up
+        # the solution
+        self.genes = []
+        # how many 'genes' in each chromosome?
+        self.length = length
+        # initialize fitness score
+        self.fitness = 0
+
+    def printChromosome(self):
+        for gene in self.genes:
+            gene.printGene()
+        print "fitness = " + str(self.fitness)
+
+    def __cmp__(self, other):
+        """
+        Compare two chromosomes based on fitness
+        :param other:
+        :return:
+        """
+        return cmp(self.fitness, other.fitness)
+
+    def randomInit(self):
+        """
+        choose random values for the chromosome
+        """
+        pass
+
+    def fitnessFunction(self, goal):
+        """
+        Calculate the 'fitness' of each chromosome, which represents how
+        close the chromosome is to a valid solution
+        """
+        pass
+
+    def crossOver(self, other):
+        """
+        Given the indices of two chromosomes, 'mate' them and return two new
+        chromosomes
+        """
+        # find the mid-point
+        pivot1 = random.randint(0, len(self.genes))
+        pivot2 = random.randint(0, len(self.genes))
+        # swap the values around the mid-point
+        newChrom1 = self.genes[0:pivot1] + other.genes[pivot1:other.length]
+        newChrom2 = other.genes[0:pivot2] + self.genes[pivot2:self.length]
+        # replace the old chromosomes with the mutated pair
+        self.genes = newChrom1
+        other.value = newChrom2
+
+    def mutate(self, mutationProbability):
+        # roll the dice - are we going to mutate?
+        if (random.random() > mutationProbability):
+            return
+        # choose a random gene
+        geneIndex = random.randint(0, len(self.genes)-1)
+        gene = self.genes[geneIndex]
+        # mutate the gene by choosing a random value
+        gene.randomInit()
+
+
 class Population:
     def __init__(self, populationSize):
         """
@@ -16,18 +92,15 @@ class Population:
         self.generation = PriorityQueue()
         # how many chromosomes in each generation?
         self.populationSize = populationSize
-        # create a random population
-        self.randomPopulation()
 
-    def randomPopulation(self):
-        for i in range(0, self.populationSize):
-            self.generation.put(Chromosome())
+    def randomPopulation(self, chromosomeSize):
+        pass
 
     def selection(self):
         """
         Decide which members of the population survive to the next generation
         """
-        # calculate fitness scores and survival probabilities
+        # calculate fitness scores
         self.calculateFitness()
         # create an empty priority queue for the new generation
         newGeneration = PriorityQueue()
@@ -40,12 +113,11 @@ class Population:
         # keep the new generation
         self.generation = newGeneration
 
-
     def crossOver(self):
         """
         Fill in the rest of the population by 'mating' pairs of chromosomes
         """
-        # calculate fitness scores and survival probabilities
+        # calculate fitness scores
         self.calculateFitness()
         # create an empty priority queue for the new generation
         newGeneration = PriorityQueue()
@@ -74,7 +146,7 @@ class Population:
             self.generation.put(chromosome)
 
     def mutate(self, mutationProbability):
-        # calculate fitness scores and survival probabilities
+        # calculate fitness scores
         self.calculateFitness()
         # create an empty priority queue for the new generation
         newGeneration = PriorityQueue()
@@ -92,29 +164,25 @@ class Population:
     def calculateFitness(self):
         # create an empty priority queue to hold chromosomes
         newGeneration = PriorityQueue()
-        # add up all the fitness scores
-        totalFitness = 0
         # go through all the chromosomes in the current generation and call the mutate function on each
         while not self.generation.empty():
             # get another chromosome
             chromosome = self.generation.get()
             # calculate the fitness score
-            chromosome.fitness = chromosome.fitnessFunction('HELLOWORLD')
-            # add the fitness score to the running total
-            totalFitness += chromosome.fitness
+            chromosome.fitness = chromosome.fitnessFunction()
             # put the chromosome in the new priority queue
             newGeneration.put(chromosome)
         # go through all the chromosomes in the current generation and call the mutate function on each
         while not newGeneration.empty():
             # get another chromosome
             chromosome = newGeneration.get()
-            # calculate the survival probability
-            chromosome.survivalProbability = float(chromosome.fitness) / totalFitness
             # put the chromosome in the new priority queue
             self.generation.put(chromosome)
 
-    def foundAWinner(self,goal):
+    def foundAWinner(self):
         foundWinner = False
+        # calculate fitness scores
+        self.calculateFitness()
         # create an empty priority queue
         newGeneration = PriorityQueue()
         # go through all the chromosomes in the current generation and call the mutate function on each
@@ -122,18 +190,14 @@ class Population:
             # get another chromosome
             chromosome = self.generation.get()
             # see if this matches
-            if chromosome.fitnessFunction(goal) == 0:
+            if chromosome.fitnessFunction() == 0:
                 foundWinner = True
-                winner = chromosome
             # put the chromosome in the new generation
             newGeneration.put(chromosome)
         # keep the new generation
         self.generation = newGeneration
-        # report that we haven't found a winner yet
-        if (foundWinner):
-            return (True, winner.genes)
-        else:
-            return (False, 'nuts')
+        # report whether we found a winner
+        return foundWinner
 
     def printPopulation(self):
         # calculate fitness scores and survival probabilities
@@ -152,103 +216,77 @@ class Population:
         self.generation = newGeneration
 
 
-class Chromosome:
+class BlueGene(Gene):
     def __init__(self):
-        """
-        Each chromosome represents a single potential solution
-        """
-        # each chromosome is a collection of individual 'genes' that make up
-        # the solution
-        self.genes = []
-        # how many 'genes' in each chromosome?
-        self.length = 10
+        # call the parent constructor
+        Gene.__init__(self)
+        # choose a random value to start
+        self.randomInit()
+
+    def randomInit(self):
+        self.value = chr(random.randint(0, 25) + 65)
+
+
+class BlueChromosome(Chromosome):
+    def __init__(self, length):
+        # call the parent constructor
+        Chromosome.__init__(self, length)
         # choose random values for the chromosome
         self.randomInit()
         # initialize fitness score
-        self.fitness = self.fitnessFunction('HELLOWORLD')
-        # survival probability
-        self.survivalProbability = 0
-
-    def printChromosome(self):
-        print "value = " + str(self.genes)
-        print "fitness = " + str(self.fitness)
-
-    def __cmp__(self, other):
-        """
-        Compare two chromosomes based on fitness
-        :param other:
-        :return:
-        """
-        return cmp(self.fitness, other.fitness)
+        self.fitness = self.fitnessFunction()
 
     def randomInit(self):
         """
         choose random values for the chromosome
         """
         for index in range(0, self.length):
-            self.genes.append(chr(random.randint(0, 25) + 65))
+            # create a new gene
+            newGene = BlueGene()
+            # add the gene to the chromosome
+            self.genes.append(newGene)
 
-    def fitnessFunction(self, goal):
+    def fitnessFunction(self):
         """
         Calculate the 'fitness' of each chromosome, which represents how
         close the chromosome is to a valid solution
         """
         fitness = 0
+        goal = 'HELLOWORLD'
         for i in range(0, len(goal)):
-            fitness += (ord(self.genes[i]) - ord(goal[i])) * (ord(self.genes[i]) - ord(goal[i]))
+            fitness += (ord(self.genes[i].value) - ord(goal[i])) * (ord(self.genes[i].value) - ord(goal[i]))
         return fitness
 
-    def crossOver(self, other):
-        """
-        Given the indices of two chromosomes, 'mate' them and return two new
-        chromosomes
-        """
-        # find the mid-point
-        pivot1 = random.randint(0, len(self.genes))
-        pivot2 = random.randint(0, len(self.genes))
-        # swap the values around the mid-point
-        newChrom1 = self.genes[0:pivot1] + other.genes[pivot1:other.length]
-        newChrom2 = other.genes[0:pivot2] + self.genes[pivot2:self.length]
-        # replace the old chromosomes with the mutated pair
-        self.genes = newChrom1
-        other.value = newChrom2
 
-    def mutate(self, mutationProbability):
-        # roll the dice - are we going to mutate?
-        if (random.random() > mutationProbability):
-            return
-        # choose a random gene
-        gene = random.randint(0, len(self.genes)-1)
-        # choose whether to add or subtract
-        multiplier = 1
-        if random.randint(0, 1) == 1:
-            multiplier = -1
-        # mutate the gene by adding or subtracting one
-        newValue = ord(self.genes[gene])
-        newValue += multiplier * 1
-        # store new gene value
-        self.genes[gene] = chr(newValue)
+class BluePopulation(Population):
+    def __init__(self, populationSize, chromosomeSize):
+        # call the parent constructor
+        Population.__init__(self, populationSize)
+        # create a random population
+        self.randomPopulation(chromosomeSize)
 
-def geneticAlgorithm():
-    # create an initial population
-    pop = Population(20)
+    def randomPopulation(self, chromosomeSize):
+        for i in range(0, self.populationSize):
+            self.generation.put(BlueChromosome(chromosomeSize))
+
+
+def geneticAlgorithm(population):
     loopCount = 0
     # keep looping until we find a solution or we exceed our loop limit
     while (loopCount < 10000):
-        winnerTuple = pop.foundAWinner('HELLOWORLD')
-        if (winnerTuple[0]):
-            print "winner = " + str(winnerTuple[1])
-            pop.printPopulation()
+        if (population.foundAWinner()):
+            print "found a winner"
+            population.printPopulation()
             return
         # selection
-        pop.selection()
+        population.selection()
         # crossover
-        pop.crossOver()
+        population.crossOver()
         # mutation
-        pop.mutate(.07)
+        population.mutate(.07)
         # increment loop count
         loopCount += 1
         if (loopCount % 100 == 0):
             print "loop count = " + str(loopCount)
 
-geneticAlgorithm()
+#geneticAlgorithm(BluePopulation(20, 10))

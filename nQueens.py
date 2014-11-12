@@ -1,9 +1,9 @@
 __author__ = 'rsimpson'
 
-from constraintSatisfaction import *
+from simulatedAnnealing import *
 
 # This value is used to determine the size of the board when doing an n-queens problem
-GRIDSIZE = 8
+GRIDSIZE = 5
 
 # This is a list of lists - where each sub-list contains the indices that are in the
 # same column.
@@ -81,12 +81,33 @@ class CSPConstraintQueens(CSPConstraint):
         # otherwise, all constraints are satisfied so return true
         return True
 
+
+class CSPGraphQueens(CSPGraph):
+    def __init__(self):
+        # call parent constructor
+        CSPGraph.__init__(self)
+
+    def objectiveFunction(self):
+        """
+        Returns a measure of how 'good' the current solution is
+        """
+        # start at zero
+        satisfiedConstraints = 0
+        # loop through all of the constraints
+        for constraint in self.constraints:
+            # if the constraint is satisfied, then increase the count
+            if (constraint.satisfied(constraint.tail.value, constraint.head.value)):
+                satisfiedConstraints += 1
+        # return the count of satisfied constraints
+        return satisfiedConstraints
+
+
 def NQueens():
     # initialize n-queens global variables
     createNQueensGlobals()
 
     # create a csp graph
-    cspGraph = CSPGraph()
+    cspGraph = CSPGraphQueens()
 
     # add some variables
     for queen in range(0, GRIDSIZE):
@@ -110,7 +131,7 @@ def NQueens():
 
 
     # call backtracking search
-    backtrackingSearch(cspGraph, 0)
-    #hillClimbingSearch(cspGraph)
+    #backtrackingSearch(cspGraph, 0)
+    hillClimbingSearch(cspGraph)
 
 NQueens()

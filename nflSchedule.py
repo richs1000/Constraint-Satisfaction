@@ -1,7 +1,7 @@
 __author__ = 'rsimpson'
 
 
-from constraintSatisfaction import *
+from simulatedAnnealing import *
 
 # how many weeks in the season?
 NUMBER_OF_WEEKS = 4
@@ -299,12 +299,31 @@ class CSPConstraintNotEqualHomeAway(CSPConstraint):
         return True
 
 
+class CSPGraphNFL(CSPGraph):
+    def __init__(self):
+        # call parent constructor
+        CSPGraph.__init__(self)
+
+    def objectiveFunction(self):
+        """
+        Returns a measure of how 'good' the current solution is
+        """
+        # start at zero
+        satisfiedConstraints = 0
+        # loop through all of the constraints
+        for constraint in self.constraints:
+            # if the constraint is satisfied, then increase the count
+            if (constraint.satisfied(constraint.tail.value, constraint.head.value)):
+                satisfiedConstraints += 1
+        # return the count of satisfied constraints
+        return satisfiedConstraints
+
 
 def NFLSchedule():
     global NUMBER_OF_WEEKS
     global GAMES_PER_WEEK
     # create a csp graph
-    cspGraph = CSPGraph()
+    cspGraph = CSPGraphNFL()
 
     # add a feature for each position in the schedule
     # within a week:

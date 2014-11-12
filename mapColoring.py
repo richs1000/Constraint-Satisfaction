@@ -1,11 +1,32 @@
 __author__ = 'rsimpson'
 
-from constraintSatisfaction import *
+from simulatedAnnealing import *
+
+
+class CSPGraphMapColoring(CSPGraph):
+    def __init__(self):
+        # call parent constructor
+        CSPGraph.__init__(self)
+
+    def objectiveFunction(self):
+        """
+        Returns a measure of how 'good' the current solution is
+        """
+        # start at zero
+        satisfiedConstraints = 0
+        # loop through all of the constraints
+        for constraint in self.constraints:
+            # if the constraint is satisfied, then increase the count
+            if (constraint.satisfied(constraint.tail.value, constraint.head.value)):
+                satisfiedConstraints += 1
+        # return the count of satisfied constraints
+        return satisfiedConstraints
+
 
 
 def MapColoring():
     # create a csp graph
-    cspGraph = CSPGraph()
+    cspGraph = CSPGraphMapColoring()
 
     # add some variables
     cspGraph.addFeature('NSW', ['red', 'green', 'blue'])
@@ -33,8 +54,8 @@ def MapColoring():
 
 
     # call backtracking search
-    backtrackingSearch(cspGraph, 0)
-    #hillClimbingSearch(cspGraph)
+    #backtrackingSearch(cspGraph, 0)
+    hillClimbingSearch(cspGraph)
 
 
 MapColoring()
