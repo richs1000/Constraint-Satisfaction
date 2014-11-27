@@ -311,7 +311,7 @@ class CSPGraph:
         constraintList = headConstraints[:]
         # loop through all the constraints
         while len(constraintList) > 0:
-            if (len(constraintList) % 10 == 0):
+            if (len(constraintList) % 100 == 0):
                 print "\tconsistency checking constraints = " + str(len(constraintList))
             # grab a constraint off the stack
             constraint = constraintList.pop()
@@ -544,9 +544,7 @@ def backtrackingSearch(cspGraph, featureIndex):
     # loop until we find a solution or we run out of values in
     # the domain of f
     while domainIndex < len(nextFeature.domain):
-        print "feature index = " + str(featureIndex)
-        if (domainIndex % 5 == 0 or featureIndex == 51):
-            print "\tdomain index = " + str(domainIndex)
+        print "feature index = " + str(featureIndex) + "\tdomain index = " + str(domainIndex)
         # pick a value for the feature
         nextFeature.value = nextFeature.domain[domainIndex]
         # if the value satisfies all the constraints

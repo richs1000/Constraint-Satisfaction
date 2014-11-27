@@ -4,7 +4,7 @@ __author__ = 'rsimpson'
 from constraintSatisfaction import *
 
 # how many weeks in the season?
-NUMBER_OF_WEEKS = 4
+NUMBER_OF_WEEKS = 16
 
 # how many games per week?
 GAMES_PER_WEEK = 16
@@ -322,21 +322,62 @@ class CSPGraphNFL(CSPGraph):
 def NFLSchedule():
     global NUMBER_OF_WEEKS
     global GAMES_PER_WEEK
+    global nflGames
     # create a csp graph
     cspGraph = CSPGraphNFL()
 
-    # add a feature for each position in the schedule
-    # within a week:
-    # game 0 = Thursday
-    # games 1-11 = Sunday afternoon
-    # games 12-15 = Sunday evening, Sunday night, Monday night
-    print "1"
-    for schedulePosition in range(0, NUMBER_OF_WEEKS*GAMES_PER_WEEK):
-        #cspGraph.addFeature(schedulePosition, range(0, NUMBER_OF_WEEKS*GAMES_PER_WEEK))
-        cspGraph.addFeature(schedulePosition, range(0, 256))
+    # make a list to store the indices for all the Thursday games
+    thursdayGames = []
+    # make a list to store the indices for all the Monday games
+    mondayGames = []
+    # make a list to store the indices for all the afternoon games (when only eastern and central teams play)
+    afternoonGames = []
+    # make a list to store the indices for all the evening games (when any team can play
+    eveningGames = []
+    # fill in values for the lists
+    for week in range(0, NUMBER_OF_WEEKS):
+        # each week, game 0 = Thursday
+        thursdayGames.append(week * GAMES_PER_WEEK)
+        # each week, game 15 = Monday
+        mondayGames.append((week * GAMES_PER_WEEK) + (GAMES_PER_WEEK - 1))
+        # each week, games 1-11 = Sunday afternoon
+        for game in range(1,12):
+            afternoonGames.append((week * GAMES_PER_WEEK) + game)
+        # each week, games 0, 12-15 = evening games
+        eveningGames.append(week * GAMES_PER_WEEK)
+        for game in range(12,16):
+            eveningGames.append((week * GAMES_PER_WEEK) + game)
+
+    # make a list to store all the east/central time zone games
+    eastCentralGames = []
+    # make a list to store all the mountain/pacific time zone games
+    mountainPacificGames = []
+    # fill in the values for the lists
+    for game in range(0, NUMBER_OF_WEEKS * GAMES_PER_WEEK):
+        if nflGames[str(game)]['TimeZone'] == 'Eastern' or nflGames[str(game)]['TimeZone'] == 'Central':
+            eastCentralGames.append(game)
+        elif nflGames[str(game)]['TimeZone'] == 'Mountain' or nflGames[str(game)]['TimeZone'] == 'Pacific':
+            mountainPacificGames.append(game)
+        else:
+            print "ERROR: I got a bad time zone!"
+            exit()
+
+    # add a feature for each position in the schedule within a week:
+    print "Adding features..."
+    # the first game (slot 0) is always a home game for the super bowl champion - in this case,
+    # the seattle seahawks
+    cspGraph.addFeature(0, range(248, 256))
+    # fill in the rest of the games
+    for schedulePosition in range(1, NUMBER_OF_WEEKS*GAMES_PER_WEEK):
+        # afternoon slots can only hold east and central cost games
+        if schedulePosition in afternoonGames:
+            cspGraph.addFeature(schedulePosition, eastCentralGames)
+        # evening slots can hold any game
+        elif schedulePosition in eveningGames:
+            cspGraph.addFeature(schedulePosition, range(0, NUMBER_OF_WEEKS*GAMES_PER_WEEK))
 
     # Each game gets played only once, so all features have a "not equal" constraint with the other features
-    print "2"
+    print "Adding constraint - not equal constraint between all features..."
     for position1 in range(0, NUMBER_OF_WEEKS*GAMES_PER_WEEK):
         for position2 in range(position1+1, NUMBER_OF_WEEKS*GAMES_PER_WEEK):
             ftrTail = str(position1)
@@ -353,7 +394,7 @@ def NFLSchedule():
 
     # Each team plays exactly one thursday game - that means that the home and away teams for each
     # game on Thursday have to be different
-    print "3"
+    print "Adding constraint - each team plays a Thursday game..."
     for firstThursday in range(0, NUMBER_OF_WEEKS*GAMES_PER_WEEK, NUMBER_OF_WEEKS):
         for secondThursday in range (firstThursday+GAMES_PER_WEEK, NUMBER_OF_WEEKS*GAMES_PER_WEEK, GAMES_PER_WEEK):
             ftrTail = str(firstThursday)
@@ -368,9 +409,25 @@ def NFLSchedule():
             # put the new constraint in the graph's list of constraints
             cspGraph.constraints.append(newConstraint)
 
+    # Teams who played on Monday don't play their next game on Thursday
+    print "Adding constraint - no team plays a Thursday game after a Monday game..."
+    for mondayGame in mondayGames:
+        for thursdayGame in thursdayGames:
+            ftrTail = str(mondayGame)
+            ftrHead = str(thursdayGame)
+            strConstraint = 'NotEqualHomeAway'
+            # create a new constraint object from tail to head
+            newConstraint = CSPConstraintNotEqualHomeAway(cspGraph.getFeature(ftrTail), strConstraint, cspGraph.getFeature(ftrHead))
+            # put the new constraint in the graph's list of constraints
+            cspGraph.constraints.append(newConstraint)
+            # create a new constraint object from head to tail
+            newConstraint = CSPConstraintNotEqualHomeAway(cspGraph.getFeature(ftrHead), strConstraint, cspGraph.getFeature(ftrTail))
+            # put the new constraint in the graph's list of constraints
+            cspGraph.constraints.append(newConstraint)
+
     # Each team plays one game each week - that means the home and away teams for each game within each week
     # have to be different
-    print "4"
+    print "Adding constraint - no team plays more than one game per week..."
     for week in range(0, NUMBER_OF_WEEKS):
         for firstPosition in range(0, GAMES_PER_WEEK):
             for secondPosition in range(firstPosition+1, GAMES_PER_WEEK):
@@ -389,11 +446,11 @@ def NFLSchedule():
                 cspGraph.constraints.append(newConstraint)
 
     # call backtracking search
-    # print "starting backtracking..."
-    # backtrackingSearch(cspGraph, 0)
+    print "starting backtracking..."
+    backtrackingSearch(cspGraph, 0)
 
-    print "starting hill climbing"
-    hillClimbingSearch(cspGraph)
+    #print "starting hill climbing"
+    #hillClimbingSearch(cspGraph)
 
 
 NFLSchedule()
