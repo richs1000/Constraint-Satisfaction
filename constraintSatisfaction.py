@@ -311,7 +311,7 @@ class CSPGraph:
         constraintList = headConstraints[:]
         # loop through all the constraints
         while len(constraintList) > 0:
-            if (len(constraintList) % 100 == 0):
+            if (len(constraintList) % 10 == 0):
                 print "\tconsistency checking constraints = " + str(len(constraintList))
             # grab a constraint off the stack
             constraint = constraintList.pop()
