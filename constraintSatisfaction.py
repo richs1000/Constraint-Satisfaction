@@ -311,7 +311,7 @@ class CSPGraph:
         constraintList = headConstraints[:]
         # loop through all the constraints
         while len(constraintList) > 0:
-            if (len(constraintList) % 10 == 0):
+            if (len(constraintList) % 100 == 0):
                 print "\tconsistency checking constraints = " + str(len(constraintList))
             # grab a constraint off the stack
             constraint = constraintList.pop()
@@ -323,6 +323,7 @@ class CSPGraph:
             # if the arc wasn't consistent then we need to add back all the constraints
             # with a head equal to the tail of the changed constraint to the queue
             if (not consistent):
+                constraintsAdded = 0
                 # get a list of constraints where the tail feature we just changed appears as
                 # the head
                 reCheckConstraints = self.getHeadConstraints(constraint.tail.name)
@@ -332,6 +333,8 @@ class CSPGraph:
                     if not c in constraintList:
                         # put it at the bottom of the stack
                         constraintList.insert(0, c)
+                        constraintsAdded += 1
+            print "\t\tNumber of constraints added: " + str(constraintsAdded)
         return True
 
     def getOpenConstraints(self, featureName):
@@ -530,6 +533,7 @@ def backtrackingSearch(cspGraph, featureIndex):
     # if the variableIndex exceeds the total number of variables then
     # we've found an assignment for each variable and we're done
     if (featureIndex >= len(cspGraph.features)):
+        print "Solution found!"
         # print solution
         cspGraph.printSolution()
         # return True

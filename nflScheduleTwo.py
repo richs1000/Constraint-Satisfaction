@@ -352,10 +352,10 @@ class CSPConstraintDifferentThursdayTeams(CSPConstraint):
         away1 = self.tail.awayTeam
         away2 = self.head.awayTeam
         # compare the home teams for the two games
-        if (home1 == home2 or home1 == away1 or home1 == away2):
+        if (home1 == home2 or home1 == away2):
             return False
         # compare the away teams for the two games
-        if (home2 == away1 or home2 == away2 or away1 == away2):
+        if (away1 == home2 or away1 == away2):
             return False
         # otherwise, they are different so the constraint is satisfied
         return True
@@ -372,8 +372,6 @@ class CSPConstraintDifferentMondayThursdayTeams(CSPConstraint):
         home or away team and the game is on Thursday and true if they have different values
         or one of the features does not have a value
         """
-        # access table of nfl games
-        global nflGames
         # access list of Thursday games
         global thursdayGames
         # access list of Monday games
@@ -381,21 +379,18 @@ class CSPConstraintDifferentMondayThursdayTeams(CSPConstraint):
         # if the head or the tail haven't been assigned, then the constraint is satisfied
         if headValue == "none" or tailValue == "none":
             return True
-        # if the first game is not on Thursday or the second game is not on Monday then we're done
+        # if the first game is not on Monday or the second game is not on Thursday then we're done
         if (not int(headValue) in thursdayGames) or (not int(tailValue) in mondayGames):
             return True
-        # get the home and away teams from the feature objects
-        home1 = self.tail.homeTeam
-        home2 = self.head.homeTeam
-        away1 = self.tail.awayTeam
-        away2 = self.head.awayTeam
-        # compare the home teams for the two games
-        if (home1 == home2 or home1 == away1 or home1 == away2):
+        # divide both game slots by the number of games per week to find which
+        # week both games are scheduled for
+        tailWeek = int(tailValue) / GAMES_PER_WEEK
+        headWeek = int(headValue) / GAMES_PER_WEEK
+        # make sure that a Monday game and Thursday games aren't scheduled back-to-back
+        if (headWeek == tailWeek + 1):
+            # return False if both games fall in the same week
             return False
-        # compare the away teams for the two games
-        if (home2 == away1 or home2 == away2 or away1 == away2):
-            return False
-        # otherwise, they are different so the constraint is satisfied
+        # the games are in different weeks, so return True
         return True
 
 
@@ -410,12 +405,47 @@ class CSPConstraintDifferentWeeks(CSPConstraint):
         the same week and true if they have different values or one of the features
         does not have a value
         """
-        # access table of nfl games
-        global nflGames
         # access the number of games per week
         global GAMES_PER_WEEK
         # if the head or the tail haven't been assigned, then the constraint is satisfied
         if headValue == "none" or tailValue == "none":
+            return True
+        # divide both game slots by the number of games per week to find which
+        # week both games are scheduled for
+        if (int(tailValue) / GAMES_PER_WEEK) == (int(headValue) / GAMES_PER_WEEK):
+            # return False if both games fall in the same week
+            return False
+        # the games are in different weeks, so return True
+        return True
+
+
+class CSPConstraintJetsGiants(CSPConstraint):
+    def __init__(self, ftrTail, strConstraint, ftrHead):
+        # call the parent constructor
+        CSPConstraint.__init__(self, ftrTail, strConstraint, ftrHead)
+
+    def satisfied(self, tailValue, headValue):
+        """
+        returns false if head and tail features (which represent NFL games) are
+        home games for the jets and giants and are scheduled for
+        the same week and true if they have different values or one of the features
+        does not have a value
+        """
+        # access the number of games per week
+        global GAMES_PER_WEEK
+        # if the head or the tail haven't been assigned, then the constraint is satisfied
+        if headValue == "none" or tailValue == "none":
+            return True
+        # get the home and away teams from the feature objects
+        home1 = self.tail.homeTeam
+        home2 = self.head.homeTeam
+        away1 = self.tail.awayTeam
+        away2 = self.head.awayTeam
+        # if neither game is a home game for the giants, then the constraint is satisfied
+        if (home1 == 'Giants' or home2 == 'Giants'):
+            return True
+        # if neither game is a home game for the jets, then the constraint is satisfied
+        if (home1 == 'Jets' or home2 == 'Jets'):
             return True
         # divide both game slots by the number of games per week to find which
         # week both games are scheduled for
@@ -471,8 +501,6 @@ def NFLSchedule():
     global mondayGames
     global afternoonGames
     global eveningGames
-    global eastCentralGames
-    global mountainPacificGames
     # create a csp graph
     cspGraph = CSPGraphNFL()
 
@@ -492,12 +520,15 @@ def NFLSchedule():
 
     # add a feature for each game:
     print "Adding features..."
-    # fill in the rest of the games
-    for gameNumber in range(0, NUMBER_OF_WEEKS*GAMES_PER_WEEK):
+    featureCount = 0
+    for gameNumber in range(0, len(nflGames)):
         cspGraph.addFeature(str(gameNumber))
+        featureCount += 1
+    print "\tNumber of features added: " + str(featureCount)
 
     # Each game gets played only once, so all features have a "not equal" constraint with the other features
     print "Adding constraint - not equal constraint between all features..."
+    constraintCount = 0
     for game1 in cspGraph.features:
         for game2 in cspGraph.features:
             # make sure game1 and game2 are different
@@ -509,41 +540,65 @@ def NFLSchedule():
                 newConstraint = CSPConstraintNotEqual(game1, strConstraint, game2)
                 # put the new constraint in the graph's list of constraints
                 cspGraph.constraints.append(newConstraint)
+                constraintCount += 1
+    print "\tNumber of constraints added: " + str(constraintCount)
 
-    """
     # Each team plays exactly one thursday game - that means that the home and away teams for each
     # game on Thursday have to be different
     print "Adding constraint - each team plays a Thursday game..."
+    constraintCount = 0
     for game1 in cspGraph.features:
         for game2 in cspGraph.features:
             # make sure game1 and game2 are different
             if (game1 == game2):
                 continue
-            else:
+            # if the same team appears in both games, they can't both be on Thursday
+            elif (game1.homeTeam == game2.homeTeam or game1.awayTeam == game2.awayTeam or game1.homeTeam == game2.awayTeam or game1.awayTeam == game2.homeTeam):
                 strConstraint = 'DifferentThursdayTeams'
                 # create a new constraint object from tail to head
                 newConstraint = CSPConstraintDifferentThursdayTeams(game1, strConstraint, game2)
                 # put the new constraint in the graph's list of constraints
                 cspGraph.constraints.append(newConstraint)
+                constraintCount += 1
+    print "\tNumber of constraints added: " + str(constraintCount)
 
     # Teams who played on Monday don't play their next game on Thursday
     print "Adding constraint - no team plays a Thursday game after a Monday game..."
+    constraintCount = 0
     for game1 in cspGraph.features:
         for game2 in cspGraph.features:
             # make sure game1 and game2 are different
             if (game1 == game2):
                 continue
-            # if the same team appears in both games, they need to be in different weeks
+            # if the same team appears in both games, they can't be back-to-back Monday and Thursday
             elif (game1.homeTeam == game2.homeTeam or game1.awayTeam == game2.awayTeam or game1.homeTeam == game2.awayTeam or game1.awayTeam == game2.homeTeam):
                 strConstraint = 'DifferentMondayThursdayTeams'
                 # create a new constraint object from tail to head
                 newConstraint = CSPConstraintDifferentMondayThursdayTeams(game1, strConstraint, game2)
                 # put the new constraint in the graph's list of constraints
                 cspGraph.constraints.append(newConstraint)
-    """
-    # Each team plays one game each week - that means the games featuring a team as either home or away team
-    # have to be different
+                constraintCount += 1
+    print "\tNumber of constraints added: " + str(constraintCount)
+
+    # Jets and Giants can't play a home game in the same week
+    print "Adding constraint - Jets and Giants can't play at home on the same week..."
+    constraintCount = 0
+    for game1 in cspGraph.features:
+        for game2 in cspGraph.features:
+            # if the giants and jets are both home teams
+            if (game1.homeTeam == 'Giants' and game2.homeTeam == 'Jets') or (game2.homeTeam == 'Giants' and game1.homeTeam == 'Jets'):
+                strConstraint = 'JetsGiants'
+                # create a new constraint object from tail to head
+                newConstraint = CSPConstraintJetsGiants(game1, strConstraint, game2)
+                # put the new constraint in the graph's list of constraints
+                cspGraph.constraints.append(newConstraint)
+                constraintCount += 1
+    print "\tNumber of constraints added: " + str(constraintCount)
+
+    # Each team plays one game each week - that means there must be a constraint between all games featuring
+    # the same team (either home or away) that the games can't be played in the same 16-game block
     print "Adding constraint - no team plays more than one game per week..."
+    constraintCount = 0
     for game1 in cspGraph.features:
         for game2 in cspGraph.features:
             # make sure game1 and game2 are different
@@ -556,6 +611,10 @@ def NFLSchedule():
                 newConstraint = CSPConstraintDifferentWeeks(game1, strConstraint, game2)
                 # put the new constraint in the graph's list of constraints
                 cspGraph.constraints.append(newConstraint)
+                constraintCount += 1
+    print "\tNumber of constraints added: " + str(constraintCount)
+
+    print "total constraints = " + str(len(cspGraph.constraints))
 
     # call backtracking search
     print "starting backtracking..."
