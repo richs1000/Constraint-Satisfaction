@@ -20,10 +20,10 @@ import random
 FORWARD_CHECKING = False
 
 # This flag is used to turn on arc consistency
-ARC_CONSISTENCY = True
+ARC_CONSISTENCY = False
 
 # This flag is used to turn on variable ordering
-VARIABLE_ORDERING = True
+VARIABLE_ORDERING = False
 
 # This variable sets the limit for how many comparisons can be made before we give up
 # on finding a better neighbor in hill-climbing search
@@ -322,8 +322,8 @@ class CSPGraph:
                 return False
             # if the arc wasn't consistent then we need to add back all the constraints
             # with a head equal to the tail of the changed constraint to the queue
+            constraintsAdded = 0
             if (not consistent):
-                constraintsAdded = 0
                 # get a list of constraints where the tail feature we just changed appears as
                 # the head
                 reCheckConstraints = self.getHeadConstraints(constraint.tail.name)
@@ -416,9 +416,19 @@ class CSPGraph:
 
     def objectiveFunction(self):
         """
-        Returns a measure of how 'good' the current solution is
+        Returns a measure of how 'good' the current solution is - the function below returns a count
+        of satisfied constraints. It is possible (recommended) to implement a more problem-
+        specific objective function in your CSPGraph subclass.
         """
-        print "You need to create your own objective function"
+        # start at zero
+        satisfiedConstraints = 0
+        # loop through all of the constraints
+        for constraint in self.constraints:
+            # if the constraint is satisfied, then increase the count
+            if (constraint.satisfied(constraint.tail.value, constraint.head.value)):
+                satisfiedConstraints += 1
+        # return the count of satisfied constraints
+        return satisfiedConstraints
 
     def jump(self):
         """
