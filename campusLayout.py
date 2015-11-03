@@ -101,10 +101,6 @@ def CampusLayout():
         newConstraint = CSPConstraintNotEqual(cspGraph.getFeature(ftrTail), '!=', cspGraph.getFeature(ftrHead))
         # put the new constraint in the graph's list of constraints
         cspGraph.constraints.append(newConstraint)
-        # create a new constraint object from head to tail
-        newConstraint = CSPConstraintNotEqual(cspGraph.getFeature(ftrHead), '!=', cspGraph.getFeature(ftrTail))
-        # put the new constraint in the graph's list of constraints
-        cspGraph.constraints.append(newConstraint)
 
     #
     # Administration building (A) must be adjacent to the bus stop (B)
