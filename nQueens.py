@@ -165,7 +165,7 @@ def NQueens():
 
 
     # call backtracking search
-    backtrackingSearch(cspGraph, 0)
-    #hillClimbingSearch(cspGraph)
+    #backtrackingSearch(cspGraph, 0)
+    hillClimbingSearch(cspGraph)
 
 NQueens()

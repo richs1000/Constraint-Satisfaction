@@ -50,6 +50,9 @@ class NQueensGene(Gene):
         # choose a random value to start
         self.randomInit()
 
+    def printGene(self):
+        print "row = " + str(self.row) + "\tvalue = " + str(self.value)
+
     def randomInit(self):
         global GRIDSIZE
         # choose a value as an offset from the start of the row

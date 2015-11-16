@@ -135,8 +135,8 @@ def CampusLayout():
     cspGraph.constraints.append(newConstraint)
 
     # call backtracking search
-    backtrackingSearch(cspGraph, 0)
-    #hillClimbingSearch(cspGraph)
+    #backtrackingSearch(cspGraph, 0)
+    hillClimbingSearch(cspGraph)
 
 
 CampusLayout()

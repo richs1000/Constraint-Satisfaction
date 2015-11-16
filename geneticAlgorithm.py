@@ -7,6 +7,9 @@ from Queue import PriorityQueue
 
 
 class Gene:
+    '''
+    Genes represent features/variables of a solution.
+    '''
     def __init__(self):
         self.value = None
 
@@ -18,6 +21,10 @@ class Gene:
 
 
 class Chromosome:
+    '''
+    A chromosome is a collection of genes. Each chromosome represents a complete potential solution.
+    NOTE: Higher fitness scores are WORSE. The best fitness score is 0
+    '''
     def __init__(self, length):
         """
         Each chromosome represents a single potential solution
@@ -31,9 +38,14 @@ class Chromosome:
         self.fitness = 0
 
     def printChromosome(self):
+        '''
+        Print the contents of each chromosome.
+        '''
+        # print out the fitness score
+        print "fitness = " + str(self.fitness)
+        # print out the value of each gene in the chromosome
         for gene in self.genes:
             gene.printGene()
-        print "fitness = " + str(self.fitness)
 
     def __cmp__(self, other):
         """
@@ -215,61 +227,6 @@ class Population:
         # keep the new generation
         self.generation = newGeneration
 
-
-class BlueGene(Gene):
-    def __init__(self):
-        # call the parent constructor
-        Gene.__init__(self)
-        # choose a random value to start
-        self.randomInit()
-
-    def randomInit(self):
-        self.value = chr(random.randint(0, 25) + 65)
-
-
-class BlueChromosome(Chromosome):
-    def __init__(self, length):
-        # call the parent constructor
-        Chromosome.__init__(self, length)
-        # choose random values for the chromosome
-        self.randomInit()
-        # initialize fitness score
-        self.fitness = self.fitnessFunction()
-
-    def randomInit(self):
-        """
-        choose random values for the chromosome
-        """
-        for index in range(0, self.length):
-            # create a new gene
-            newGene = BlueGene()
-            # add the gene to the chromosome
-            self.genes.append(newGene)
-
-    def fitnessFunction(self):
-        """
-        Calculate the 'fitness' of each chromosome, which represents how
-        close the chromosome is to a valid solution
-        """
-        fitness = 0
-        goal = 'HELLOWORLD'
-        for i in range(0, len(goal)):
-            fitness += (ord(self.genes[i].value) - ord(goal[i])) * (ord(self.genes[i].value) - ord(goal[i]))
-        return fitness
-
-
-class BluePopulation(Population):
-    def __init__(self, populationSize, chromosomeSize):
-        # call the parent constructor
-        Population.__init__(self, populationSize)
-        # create a random population
-        self.randomPopulation(chromosomeSize)
-
-    def randomPopulation(self, chromosomeSize):
-        for i in range(0, self.populationSize):
-            self.generation.put(BlueChromosome(chromosomeSize))
-
-
 def geneticAlgorithm(population):
     loopCount = 0
     # keep looping until we find a solution or we exceed our loop limit
@@ -289,4 +246,3 @@ def geneticAlgorithm(population):
         if (loopCount % 100 == 0):
             print "loop count = " + str(loopCount)
 
-#geneticAlgorithm(BluePopulation(20, 10))
