@@ -3,6 +3,10 @@ __author__ = 'rsimpson'
 import random
 from geneticAlgorithm import *
 
+
+# The number of chromosomes in each generation
+POPULATION_SIZE = 10
+
 # This value is used to determine the size of the board when doing an n-queens problem
 GRIDSIZE = 5
 
@@ -42,41 +46,32 @@ def createNQueensGlobals():
 
 
 class NQueensGene(Gene):
-    def __init__(self, row):
+    '''
+    Each gene represents a state. The value for each gene is the column (within a row) where the queen is positioned.
+    '''
+    def __init__(self, _row):
+        # domain for each gene is the set of grid cells within the row represented by the gene
+        # if GRIDSIZE = 5, we have a 5x5 grid, and rows are 0..4, 5..9, 10..14, 15..19, 20..24
+        domain = range(_row * GRIDSIZE, _row * GRIDSIZE + GRIDSIZE)
         # call the parent constructor
-        Gene.__init__(self)
-        # which row of the board does this gene represent?
-        self.row = row
-        # choose a random value to start
-        self.randomInit()
-
-    def printGene(self):
-        print "row = " + str(self.row) + "\tvalue = " + str(self.value)
-
-    def randomInit(self):
-        global GRIDSIZE
-        # choose a value as an offset from the start of the row
-        self.value = self.row * GRIDSIZE + random.randint(0 ,GRIDSIZE - 1)
+        Gene.__init__(self, str(_row), domain)
 
 
 class NQueensChromosome(Chromosome):
-    def __init__(self, length):
-        # call the parent constructor
-        Chromosome.__init__(self, length)
-        # choose random values for the chromosome
-        self.randomInit()
-        # initialize fitness score
-        self.fitness = self.fitnessFunction()
-
-    def randomInit(self):
-        """
-        choose random values for the chromosome
-        """
-        for row in range(0, self.length):
-            # create a new gene
-            newGene = NQueensGene(row)
-            # add the gene to the chromosome
-            self.genes.append(newGene)
+    '''
+    A chromosome is a location assignment for each building. The chromosome stores a list of gene objects in
+    self.genes
+    '''
+    def __init__(self):
+        # create a gene object for each row in the grid
+        # start with an empty list for the genes...
+        lstGenes = []
+        # for each state name...
+        for row in range(0, GRIDSIZE):
+            # create a new gene object and add it to the list of genes
+            lstGenes.append(NQueensGene(row))
+        # call the parent constructor with a list of gene objects
+        Chromosome.__init__(self, lstGenes)
 
     def countViolations(self, gene0, gene1):
         """
@@ -101,7 +96,7 @@ class NQueensChromosome(Chromosome):
         # (to create more separation between fitness scores)
         return violationCount * violationCount
 
-    def fitnessFunction(self):
+    def fitness(self):
         """
         Calculate the 'fitness' of each chromosome, which represents how
         close the chromosome is to a valid solution
@@ -119,17 +114,10 @@ class NQueensChromosome(Chromosome):
 
 
 class NQueensPopulation(Population):
-    def __init__(self, populationSize, chromosomeSize):
-        # initialize global variables
-        createNQueensGlobals()
-        # call the parent constructor
-        Population.__init__(self, populationSize)
-        # create a random population
-        self.randomPopulation(chromosomeSize)
-
-    def randomPopulation(self, chromosomeSize):
-        for i in range(0, self.populationSize):
-            self.generation.put(NQueensChromosome(chromosomeSize))
+    def __init__(self, _populationSize, _chromosomeClass):
+        # call the parent constructor and pass it a chromosome object to use as a template
+        Population.__init__(self, _populationSize, _chromosomeClass)
 
 
-geneticAlgorithm(NQueensPopulation(50, GRIDSIZE))
+createNQueensGlobals()
+geneticAlgorithm(NQueensPopulation(POPULATION_SIZE, NQueensChromosome))

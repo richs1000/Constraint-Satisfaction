@@ -3,55 +3,40 @@ __author__ = 'rsimpson'
 import random
 from geneticAlgorithm import *
 
+
+# The number of chromosomes in each generation
+POPULATION_SIZE = 10
+
+
+
 class MapColoringGene(Gene):
     '''
-    Each gene represents a state (e.g., Northern Territories). The value of each state is the color chosen for that
-    state.
+    Each gene represents a state. The value for each gene is the color of the state.
     '''
-    def __init__(self, _name):
+    def __init__(self, _strName):
         # call the parent constructor
-        Gene.__init__(self)
-        # choose a random value to start
-        self.randomInit()
-        # keep track of which state in Australia this gene represents
-        self.name = _name
-
-    def printGene(self):
-        print "name = " + self.name + "\tvalue = " + str(self.value)
-
-    def randomInit(self):
-        global GRIDSIZE
-        # choose a value for the gene - states can be colored red, blue or green
-        self.value = random.choice(['red', 'green', 'blue'])
+        Gene.__init__(self, _strName, ['red', 'green', 'blue'])
 
 
 class MapColoringChromosome(Chromosome):
     '''
-    A chromosome is a color assignment for each state. The chromosome stores a list of gene objects in
+    A chromosome is a location assignment for each building. The chromosome stores a list of gene objects in
     self.genes
     '''
-    def __init__(self, length):
-        # call the parent constructor
-        Chromosome.__init__(self, length)
-        # choose random values for the chromosome
-        self.randomInit()
-        # initialize fitness score
-        self.fitness = self.fitnessFunction()
-
-    def randomInit(self):
-        """
-        choose random values for the chromosome
-        """
-        # create a list of state names
+    def __init__(self):
+        # create a gene object for each state in the map
+        # start with an empty list for the genes...
+        lstGenes = []
+        # and a list of state names
         states = ['NSW', 'V', 'T', 'WA', 'NT', 'SA', 'Q']
-        # for each position in the chromosome (i.e., each state in Australia)...
-        for state in range(0, self.length):
-            # create a new gene
-            newGene = MapColoringGene(states[state])
-            # add the gene to the chromosome
-            self.genes.append(newGene)
+        # for each state name...
+        for state in states:
+            # create a new gene object and add it to the list of genes
+            lstGenes.append(MapColoringGene(state))
+        # call the parent constructor with a list of gene objects
+        Chromosome.__init__(self, lstGenes)
 
-    def fitnessFunction(self):
+    def fitness(self):
         """
         Calculate the 'fitness' of each chromosome, which represents how
         close the chromosome is to a valid solution
@@ -59,33 +44,32 @@ class MapColoringChromosome(Chromosome):
         # start accumulator at zero
         fitness = 0
         # create a list of gene pairs within the chromosome that cannot be equal
-        # each pair contains an index for two genes within the chromosome (a list of genes)
-        constraintList = [(3, 4), (3, 5), (6, 4), (5, 4), (5, 6), (5, 0), (5, 1), (0, 1), (6, 0)]
-        # check whether the queen represented by this gene
-        for constraint in constraintList:
-            # get index of genes within chromosome
-            geneIndex1 = constraint[0]
-            geneIndex2 = constraint[1]
-            # get value of each gene
-            gene1 = self.genes[geneIndex1]
-            gene2 = self.genes[geneIndex2]
-            # if the genes are equal then add 1 to our fitness score
-            if gene1.value == gene2.value:
-                fitness += 1
+        # each pair contains the names for two genes within the chromosome (a list of genes)
+        constraintList = [('WA', 'NT'), ('WA', 'SA'), ('Q', 'NT'), ('SA', 'NT'), ('SA', 'Q'), ('SA', 'NSW'), ('SA', 'V'), ('NSW', 'V'), ('Q', 'NSW')]
+        # loop through each pair of genes in the chromosome, starting with the first gene...
+        for g1 in range(0, len(self.genes)-1):
+            # and comparing it to every gene that follows
+            for g2 in range(g1+1, len(self.genes)):
+                # loop through each constraint pair
+                for constraint in constraintList:
+                    # get pointers to the two genes being compared
+                    gene1 = self.genes[g1]
+                    gene2 = self.genes[g2]
+                    # check gene values against the constraint - if the names match the constraint
+                    if (((gene1.name == constraint[0] and gene2.name == constraint[1]) \
+                        or (gene1.name == constraint[1] and gene2.name == constraint[0])) \
+                        # and the genes have the same value
+                        and (gene1.value == gene2.value)):
+                        # increase the fitness value
+                        fitness += 1
         # return the total fitness
         return fitness
 
 
 class MapColoringPopulation(Population):
-    def __init__(self, populationSize, chromosomeSize):
-        # call the parent constructor
-        Population.__init__(self, populationSize)
-        # create a random population
-        self.randomPopulation(chromosomeSize)
-
-    def randomPopulation(self, chromosomeSize):
-        for i in range(0, self.populationSize):
-            self.generation.put(MapColoringChromosome(chromosomeSize))
+    def __init__(self, _populationSize, _chromosomeClass):
+        # call the parent constructor and pass it a chromosome object to use as a template
+        Population.__init__(self, _populationSize, _chromosomeClass)
 
 
-geneticAlgorithm(MapColoringPopulation(10, 7))
+geneticAlgorithm(MapColoringPopulation(POPULATION_SIZE, MapColoringChromosome))

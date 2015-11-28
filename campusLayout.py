@@ -6,10 +6,27 @@ from constraintSatisfaction import *
 FORWARD_CHECKING = False
 
 # This flag is used to turn on arc consistency
-ARC_CONSISTENCY = False
+ARC_CONSISTENCY = True
 
 # This flag is used to turn on variable ordering
-VARIABLE_ORDERING = False
+VARIABLE_ORDERING = True
+
+# This variable sets the limit for how many comparisons can be made before we give up
+# on finding a better neighbor in hill-climbing search
+COMPARISON_LIMIT = 1000
+
+# This variable sets the limit for the total number of times through the hill-climbing
+# loop before we give up
+LOOP_LIMIT = 20000
+
+# This variable keeps track of the probability of making a big jump
+jumpProbability = 0.1
+
+# This variable keeps track of the size of the jump
+jumpSize = 5
+
+# This variable determines how often we reduce the jump probability
+jumpCounter = 1000
 
 class CSPGraphCampusLayout(CSPGraph):
     def __init__(self):
@@ -76,15 +93,22 @@ class CSPConstraintNotAdjacent(CSPConstraint):
         # otherwise, constraint is not satisfied so return false
         return True
 
+
+class CSPFeatureBuilding(CSPFeature):
+    def __init__(self, _strName, _lstDomain):
+        # call parent constructor
+        CSPFeature.__init__(self, _strName, _lstDomain)
+
+
 def CampusLayout():
     # create a csp graph
     cspGraph = CSPGraphCampusLayout()
 
     # add some variables
-    cspGraph.addFeature('A', [1, 3, 5, 6])
-    cspGraph.addFeature('B', [3, 6])
-    cspGraph.addFeature('C', [1, 2, 3, 4, 5, 6])
-    cspGraph.addFeature('D', [2, 3, 4, 6])
+    cspGraph.addFeature(CSPFeatureBuilding('A', [1, 3, 5, 6]))
+    cspGraph.addFeature(CSPFeatureBuilding('B', [3, 6]))
+    cspGraph.addFeature(CSPFeatureBuilding('C', [1, 2, 3, 4, 5, 6]))
+    cspGraph.addFeature(CSPFeatureBuilding('D', [2, 3, 4, 6]))
 
     #
     # add not-equal constraints
@@ -100,7 +124,7 @@ def CampusLayout():
         # create a new constraint object from tail to head
         newConstraint = CSPConstraintNotEqual(cspGraph.getFeature(ftrTail), '!=', cspGraph.getFeature(ftrHead))
         # put the new constraint in the graph's list of constraints
-        cspGraph.constraints.append(newConstraint)
+        cspGraph.addConstraint(newConstraint)
 
     #
     # Administration building (A) must be adjacent to the bus stop (B)
@@ -108,7 +132,7 @@ def CampusLayout():
     # create a new constraint object
     newConstraint = CSPConstraintAdjacent(cspGraph.getFeature('A'), 'adjacent', cspGraph.getFeature('B'))
     # put the new constraint in the graph's list of constraints
-    cspGraph.constraints.append(newConstraint)
+    cspGraph.addConstraint(newConstraint)
 
     #
     # Classroom (C) must be adjacent to the bus stop (B)
@@ -116,7 +140,7 @@ def CampusLayout():
     # create a new constraint object
     newConstraint = CSPConstraintAdjacent(cspGraph.getFeature('C'), 'adjacent', cspGraph.getFeature('B'))
     # put the new constraint in the graph's list of constraints
-    cspGraph.constraints.append(newConstraint)
+    cspGraph.addConstraint(newConstraint)
 
     #
     # Classroom (C) must be adjacent to the dormitory (D)
@@ -124,7 +148,7 @@ def CampusLayout():
     # create a new constraint object
     newConstraint = CSPConstraintAdjacent(cspGraph.getFeature('C'), 'adjacent', cspGraph.getFeature('D'))
     # put the new constraint in the graph's list of constraints
-    cspGraph.constraints.append(newConstraint)
+    cspGraph.addConstraint(newConstraint)
 
     #
     # Administration building (A) must NOT be adjacent to the dormitory (D)
@@ -132,11 +156,11 @@ def CampusLayout():
     # create a new constraint object
     newConstraint = CSPConstraintNotAdjacent(cspGraph.getFeature('A'), 'adjacent', cspGraph.getFeature('D'))
     # put the new constraint in the graph's list of constraints
-    cspGraph.constraints.append(newConstraint)
+    cspGraph.addConstraint(newConstraint)
 
     # call backtracking search
-    #backtrackingSearch(cspGraph, 0)
-    hillClimbingSearch(cspGraph)
+    backtrackingSearch(cspGraph)
+    #hillClimbingSearch(cspGraph)
 
 
 CampusLayout()

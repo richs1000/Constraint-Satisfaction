@@ -6,10 +6,28 @@ from constraintSatisfaction import *
 FORWARD_CHECKING = False
 
 # This flag is used to turn on arc consistency
-ARC_CONSISTENCY = False
+ARC_CONSISTENCY = True
 
 # This flag is used to turn on variable ordering
-VARIABLE_ORDERING = False
+VARIABLE_ORDERING = True
+
+# This variable sets the limit for how many comparisons can be made before we give up
+# on finding a better neighbor in hill-climbing search
+COMPARISON_LIMIT = 1000
+
+# This variable sets the limit for the total number of times through the hill-climbing
+# loop before we give up
+LOOP_LIMIT = 20000
+
+# This variable keeps track of the probability of making a big jump
+jumpProbability = 0.1
+
+# This variable keeps track of the size of the jump
+jumpSize = 5
+
+# This variable determines how often we reduce the jump probability
+jumpCounter = 1000
+
 
 class CSPGraphSudoku(CSPGraph):
     def __init__(self):
@@ -34,11 +52,17 @@ def createNotEqualConstraints(_cellList, _cspGraph):
                 # create a new constraint object from tail to head
                 newConstraint = CSPConstraintNotEqual(_cspGraph.getFeature(ftrTail), '!=', _cspGraph.getFeature(ftrHead))
                 # put the new constraint in the graph's list of constraints
-                _cspGraph.constraints.append(newConstraint)
+                _cspGraph.addConstraint(newConstraint)
                 # create a new constraint object from head to tail
                 newConstraint = CSPConstraintNotEqual(_cspGraph.getFeature(ftrHead), '!=', _cspGraph.getFeature(ftrTail))
                 # put the new constraint in the graph's list of constraints
-                _cspGraph.constraints.append(newConstraint)
+                _cspGraph.addConstraint(newConstraint)
+
+
+class CSPFeatureGridCell(CSPFeature):
+    def __init__(self, _strName, _lstDomain):
+        # call parent constructor
+        CSPFeature.__init__(self, _strName, _lstDomain)
 
 
 def sudoku():
@@ -50,25 +74,25 @@ def sudoku():
     # 2  3  6  7
     # 8  9 12 13
     #10 11 14 15
-    cspGraph.addFeature('0', range(1, 5))
-    cspGraph.addFeature('1', range(1, 5))
-    cspGraph.addFeature('2', range(1, 5))
-    cspGraph.addFeature('3', range(1, 5))
+    cspGraph.addFeature(CSPFeatureGridCell('0', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('1', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('2', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('3', range(1, 5)))
 
-    cspGraph.addFeature('4', range(1, 5))
-    cspGraph.addFeature('5', range(1, 5))
-    cspGraph.addFeature('6', range(1, 5))
-    cspGraph.addFeature('7', range(1, 5))
+    cspGraph.addFeature(CSPFeatureGridCell('4', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('5', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('6', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('7', range(1, 5)))
 
-    cspGraph.addFeature('8', range(1, 5))
-    cspGraph.addFeature('9', range(1, 5))
-    cspGraph.addFeature('10', range(1, 5))
-    cspGraph.addFeature('11', range(1, 5))
+    cspGraph.addFeature(CSPFeatureGridCell('8', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('9', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('10', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('11', range(1, 5)))
 
-    cspGraph.addFeature('12', range(1, 5))
-    cspGraph.addFeature('13', range(1, 5))
-    cspGraph.addFeature('14', range(1, 5))
-    cspGraph.addFeature('15', range(1, 5))
+    cspGraph.addFeature(CSPFeatureGridCell('12', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('13', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('14', range(1, 5)))
+    cspGraph.addFeature(CSPFeatureGridCell('15', range(1, 5)))
 
     #
     # add not-equal constraints
@@ -83,7 +107,8 @@ def sudoku():
     sqrList = [['0', '1', '2', '3'], ['4', '5', '6', '7'], ['8', '9', '10', '11'], ['12', '13', '14', '15']]
     createNotEqualConstraints(sqrList, cspGraph)
 
-    hillClimbingSearch(cspGraph)
+    #hillClimbingSearch(cspGraph)
+    backtrackingSearch(cspGraph)
 
 
 sudoku()

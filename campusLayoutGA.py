@@ -3,25 +3,48 @@ __author__ = 'rsimpson'
 import random
 from geneticAlgorithm import *
 
-class CampusLayoutGene(Gene):
+
+# The number of chromosomes in each generation
+POPULATION_SIZE = 10
+
+class AdminBldgGene(Gene):
     '''
     Each gene represents a building. The value for each gene is the position on the campus grid where the building
     is located.
     '''
-    def __init__(self, _name):
+    def __init__(self):
         # call the parent constructor
-        Gene.__init__(self)
-        # choose a random value to start
-        self.randomInit()
-        # keep track of which building this gene represents
-        self.name = _name
+        Gene.__init__(self, 'Administration', [1, 3, 5, 6])
 
-    def printGene(self):
-        print "name = " + self.name + "\tvalue = " + str(self.value)
 
-    def randomInit(self):
-        # choose a value for the gene - there are six squares in the grid
-        self.value = random.randint(1, 6)
+class BusStopGene(Gene):
+    '''
+    Each gene represents a building. The value for each gene is the position on the campus grid where the building
+    is located.
+    '''
+    def __init__(self):
+        # call the parent constructor
+        Gene.__init__(self, 'Bus Stop', [3, 6])
+
+
+class ClassroomGene(Gene):
+    '''
+    Each gene represents a building. The value for each gene is the position on the campus grid where the building
+    is located.
+    '''
+    def __init__(self):
+        # call the parent constructor
+        Gene.__init__(self, 'Classroom', [1, 2, 3, 4, 5, 6])
+
+
+class DormitoryGene(Gene):
+    '''
+    Each gene represents a building. The value for each gene is the position on the campus grid where the building
+    is located.
+    '''
+    def __init__(self):
+        # call the parent constructor
+        Gene.__init__(self, 'Dormitory', [2, 3, 4, 6])
 
 
 class CampusLayoutChromosome(Chromosome):
@@ -29,26 +52,9 @@ class CampusLayoutChromosome(Chromosome):
     A chromosome is a location assignment for each building. The chromosome stores a list of gene objects in
     self.genes
     '''
-    def __init__(self, length):
-        # call the parent constructor
-        Chromosome.__init__(self, length)
-        # choose random values for the chromosome
-        self.randomInit()
-        # initialize fitness score
-        self.fitness = self.fitnessFunction()
-
-    def randomInit(self):
-        """
-        choose random values for the chromosome
-        """
-        # create a list of state names
-        states = ['Admin Bldg', 'Bus Stop', 'Classroom', 'Dormitory']
-        # for each position in the chromosome (i.e., each building)...
-        for state in range(0, self.length):
-            # create a new gene
-            newGene = CampusLayoutGene(states[state])
-            # add the gene to the chromosome
-            self.genes.append(newGene)
+    def __init__(self):
+        # call the parent constructor with a list of gene objects
+        Chromosome.__init__(self, [AdminBldgGene(), BusStopGene(), ClassroomGene(), DormitoryGene()])
 
     def adjacent(self, tailValue, headValue):
         """
@@ -69,13 +75,13 @@ class CampusLayoutChromosome(Chromosome):
         # otherwise, constraint is not satisfied so return false
         return False
 
-    def fitnessFunction(self):
+    def fitness(self):
         """
         Calculate the 'fitness' of each chromosome, which represents how
         close the chromosome is to a valid solution
         """
         # start accumulator at zero
-        fitness = 0
+        fit = 0
         # create a list of gene pairs within the chromosome representing buidlings that CANNOT be adjacent
         # each pair contains an index for two genes within the chromosome (a list of genes)
         # Administration building (A) must NOT be adjacent to the dormitory (D)
@@ -91,7 +97,7 @@ class CampusLayoutChromosome(Chromosome):
         for gene1 in range(0, len(self.genes)-1):
             for gene2 in range(gene1+1, len(self.genes)):
                 if self.genes[gene1].value == self.genes[gene2].value:
-                    fitness += 1
+                    fit += 1
         # check each gene against list of illegal values
         for constraint in notEqualList:
             # get index of gene within chromosome
@@ -102,7 +108,7 @@ class CampusLayoutChromosome(Chromosome):
             geneValue = self.genes[geneIndex].value
             # if the genes are not adjacent then add 1 to our fitness score
             if geneValue == illegalValue:
-                fitness += 1
+                fit += 1
         # check each gene against the adjacency constraints
         for constraint in adjacentList:
             # get index of genes within chromosome
@@ -113,7 +119,7 @@ class CampusLayoutChromosome(Chromosome):
             gene2 = self.genes[geneIndex2]
             # if the genes are not adjacent then add 1 to our fitness score
             if not self.adjacent(gene1.value, gene2.value):
-                fitness += 1
+                fit += 1
         # check each gene against the non-adjacency constraints
         for constraint in notAdjacentList:
             # get index of genes within chromosome
@@ -124,21 +130,14 @@ class CampusLayoutChromosome(Chromosome):
             gene2 = self.genes[geneIndex2]
             # if the genes are adjacent then add 1 to our fitness score
             if self.adjacent(gene1.value, gene2.value):
-                fitness += 1
+                fit += 1
         # return the total fitness
-        return fitness
+        return fit
 
 
 class CampusLayoutPopulation(Population):
-    def __init__(self, populationSize, chromosomeSize):
-        # call the parent constructor
-        Population.__init__(self, populationSize)
-        # create a random population
-        self.randomPopulation(chromosomeSize)
+    def __init__(self, _populationSize, _chromosomeClass):
+        # call the parent constructor and pass it a chromosome object to use as a template
+        Population.__init__(self, _populationSize, _chromosomeClass)
 
-    def randomPopulation(self, chromosomeSize):
-        for i in range(0, self.populationSize):
-            self.generation.put(CampusLayoutChromosome(chromosomeSize))
-
-
-geneticAlgorithm(CampusLayoutPopulation(10, 4))
+geneticAlgorithm(CampusLayoutPopulation(POPULATION_SIZE, CampusLayoutChromosome))
