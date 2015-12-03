@@ -141,8 +141,9 @@ class Population(object):
         """
         Create a class that holds the collection of chromosomes (the 'population')
         """
-        # a generation is a collection of chromosomes ordered by fitness
-        self.generation = []
+        # a generation is a collection of chromosomes stored in a priority queue
+        # which is ordered by fitness
+        self.generation = PriorityQueue()
         # store how many chromosomes are in each generation
         self.populationSize = _populationSize
         # store a template for generating chromosomes
@@ -154,32 +155,46 @@ class Population(object):
         # for each "slot" in the population queue
         for i in range(0, self.populationSize):
             # add a new, randomly-generated chromosome
-            self.generation.append(self.chromosomeClass())
-        # order by fitness
-        self.generation.sort()
+            self.generation.put(self.chromosomeClass())
+
 
     def selection(self):
         """
         Decide which members of the population survive to the next generation
         """
+        # create an empty priority queue for the new generation
+        newGeneration = PriorityQueue()
         # pick top X of the population to survive
-        for c in range(len(self.generation) / SELECTION_FRACTION, len(self.generation)):
-            # remove the chromosome at the end (the lowest-ranked chromosome)
-            chromosome = self.generation.pop()
+        for c in range(0, self.generation.qsize() / SELECTION_FRACTION):
+            # get a chromosome
+            chromosome = self.generation.get()
+            # put the chromosomes in the new generation
+            newGeneration.put(chromosome)
+        # keep the new generation
+        self.generation = newGeneration
 
     def crossOver(self):
         """
         Fill in the rest of the population by 'mating' pairs of chromosomes
         """
-        # create an empty list for the new generation
-        newGeneration = []
+        # copy all the chromosomes from the current generation to a regular python list
+        # start with an empty list
+        lstChromosomes = []
+        # loop through all the items in the queue
+        while not self.generation.empty():
+            # take a chromosome off the queue
+            chromosome = self.generation.get()
+            # append the chromosome to the list
+            lstChromosomes.append(chromosome)
+        # create an empty priority queue for the new generation
+        newGeneration = PriorityQueue()
         # cross-over all chromosomes in turn - start with the beginning of the list
-        for chrom1Index in range(0, len(self.generation)-1):
+        for chrom1Index in range(0, len(lstChromosomes)-1):
             # cross-over with all chromosomes that come after it
-            for chrom2Index in range(chrom1Index, len(self.generation)):
+            for chrom2Index in range(chrom1Index, len(lstChromosomes)):
                 # get the chromosomes we are crossing over
-                chrom1 = self.generation[chrom1Index]
-                chrom2 = self.generation[chrom2Index]
+                chrom1 = lstChromosomes[chrom1Index]
+                chrom2 = lstChromosomes[chrom2Index]
                 # perform the cross-over operation
                 xOver = chrom1.crossOver(chrom2)
                 # create two new chromosome objects
@@ -189,79 +204,108 @@ class Population(object):
                 newChrom1.genes = xOver[0]
                 newChrom2.genes = xOver[1]
                 # save the new chromosomes we just created
-                newGeneration.append(newChrom1)
-                newGeneration.append(newChrom2)
-        # for all the chromosomes we created through cross-over...
-        for chromosome in newGeneration:
-            # if we don't already have this chromosome
-            if not chromosome in self.generation:
-                # add it to our generation
-                self.generation.append(chromosome)
+                newGeneration.put(newChrom1)
+                newGeneration.put(newChrom2)
+        # save all the original chromosomes
+        for chromosome in lstChromosomes:
+            newGeneration.put(chromosome)
+        # keep track of all the chromosomes we create
+        lstChromosomes = []
+        # keep track of how many we are keeping
+        chromosomesKept = 0
+        # as long as we haven't added more chromosomes than the population is supposed to have
+        # and we have more chromosomes to add...
+        while chromosomesKept < self.populationSize and not newGeneration.empty():
+            # take a chromosome off the new generation queue
+            newChromosome = newGeneration.get()
+            # have we seen this chromosome before?
+            if (not newChromosome in lstChromosomes):
+                # store it in our list of chromosomes
+                lstChromosomes.append(newChromosome)
+                # store it in the queue in the chromosome
+                self.generation.put(newChromosome)
+                # increase our count of chromosomes kept
+                chromosomesKept += 1
         # as long as we haven't added more chromosomes than the population is supposed to have, create
         # random chromosomes
-        while len(self.generation) < self.populationSize:
+        while chromosomesKept < self.populationSize:
             # create a random chromosome
             newChromosome = self.chromosomeClass()
             # have we seen this chromosome before?
-            if (not newChromosome in self.generation):
+            if (not newChromosome in lstChromosomes):
                 # store it in our list of chromosomes
-                self.generation.append(newChromosome)
-        # make sure our list is ordered and not too big
-        self.cleanUpGeneration()
+                lstChromosomes.append(newChromosome)
+                # store it in the queue in the chromosome
+                self.generation.put(newChromosome)
+                # increase our count of chromosomes kept
+                chromosomesKept += 1
 
     def mutate(self, _mutationProbability):
-        # keep a list of all newly-created chromosomes
-        newChromosomes = []
+        # create an empty priority queue for the new generation
+        newGeneration = PriorityQueue()
         # go through all the chromosomes in the current generation and call the mutate function on each
-        for chromosome in self.generation:
+        while not self.generation.empty():
+            # get another chromosome
+            chromosome = self.generation.get()
             # roll the dice - are we going to mutate?
-            if (random.random() < _mutationProbability):
+            if (random.random() > _mutationProbability):
                 # make a copy of the chromosome
                 newChromosome = copy.deepcopy(chromosome)
                 # mutate the chromosome
                 newChromosome.mutate()
-                # keep the new chromosome
-                newChromosomes.append(newChromosome)
-        # add the newly-created chromosome to our generation
-        for newChromosome in newChromosomes:
-            # have we seen this chromosome before?
-            if (not newChromosome in self.generation):
                 # put the chromosome in the new generation
-                self.generation.append(newChromosome)
-        # make sure our list is ordered and not too big
-        self.cleanUpGeneration()
-
-    def cleanUpGeneration(self):
-        # order by fitness
-        self.generation.sort()
-        # eliminate excess chromosomes
-        while len(self.generation) > self.populationSize:
-            self.generation.pop()
+                newGeneration.put(newChromosome)
+        # keep the new generation
+        self.generation = newGeneration
 
     def foundAWinner(self):
         foundWinner = False
+        # create an empty priority queue
+        newGeneration = PriorityQueue()
         # go through all the chromosomes in the current generation and call the mutate function on each
-        for chromosome in self.generation:
+        while not self.generation.empty():
+            # get another chromosome
+            chromosome = self.generation.get()
             # see if this matches
             if chromosome.fitness() == 0:
                 foundWinner = True
+            # put the chromosome in the new generation
+            newGeneration.put(chromosome)
+        # keep the new generation
+        self.generation = newGeneration
         # report whether we found a winner
         return foundWinner
 
     def printSolutions(self):
+        # create an empty priority queue
+        newGeneration = PriorityQueue()
         # go through all the chromosomes in the current generation and print each
         # chromosome with a fitness score of zero
-        for chromosome in self.generation:
+        while not self.generation.empty():
+            # get another chromosome
+            chromosome = self.generation.get()
             # if it's a solution (i.e., fitness = 0)...
             if chromosome.fitness() == 0:
                 # print the chromosome - True means print name and value for each gene
                 chromosome.printChromosome(True)
+            # put the chromosome in the new generation
+            newGeneration.put(chromosome)
+        # keep the new generation
+        self.generation = newGeneration
 
     def printPopulation(self):
+        # create an empty priority queue
+        newGeneration = PriorityQueue()
         # go through all the chromosomes in the current generation and print each
-        for chromosome in self.generation:
+        while not self.generation.empty():
+            # get another chromosome
+            chromosome = self.generation.get()
             # print the chromosome
             chromosome.printChromosome()
+            # put the chromosome in the new generation
+            newGeneration.put(chromosome)
+        # keep the new generation
+        self.generation = newGeneration
 
 def geneticAlgorithm(population, _mutationProbability=.2):
     loopCount = 0

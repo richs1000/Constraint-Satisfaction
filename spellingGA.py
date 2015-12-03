@@ -5,7 +5,7 @@ from geneticAlgorithm import *
 
 
 # The number of chromosomes in each generation
-POPULATION_SIZE = 20
+POPULATION_SIZE = 10
 
 
 class BlueGene(Gene):
@@ -71,4 +71,4 @@ class MapColoringPopulation(Population):
         Population.__init__(self, _populationSize, _chromosomeClass)
 
 
-geneticAlgorithm(MapColoringPopulation(POPULATION_SIZE, BlueChromosome), .001)
+geneticAlgorithm(MapColoringPopulation(POPULATION_SIZE, BlueChromosome), .05)
