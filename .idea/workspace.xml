@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1623a731-1b6c-46be-a618-d5a40b053781" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sudokuBig.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/campusLayout.py" afterPath="$PROJECT_DIR$/campusLayout.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/constraintSatisfaction.py" afterPath="$PROJECT_DIR$/constraintSatisfaction.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mapColoring.py" afterPath="$PROJECT_DIR$/mapColoring.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/nQueens.py" afterPath="$PROJECT_DIR$/nQueens.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sudoku.py" afterPath="$PROJECT_DIR$/sudoku.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sudokuBig.py" afterPath="$PROJECT_DIR$/sudokuBig.py" />
     </list>
     <ignored path="cspCode.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -20,23 +25,23 @@
     <SUITE FILE_PATH="coverage/cspCode$mapColoringGA.coverage" NAME="mapColoringGA Coverage Results" MODIFIED="1448751465862" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$nflSchedule.coverage" NAME="nflSchedule Coverage Results" MODIFIED="1417115920666" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$geneticAlgorithmTwo.coverage" NAME="geneticAlgorithmTwo Coverage Results" MODIFIED="1415727829742" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/cspCode$sudokuBig.coverage" NAME="sudokuBig Coverage Results" MODIFIED="1448917803832" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/cspCode$mapColoring.coverage" NAME="mapColoring Coverage Results" MODIFIED="1448487854143" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/cspCode$sudokuBig.coverage" NAME="sudokuBig Coverage Results" MODIFIED="1449155036217" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/cspCode$mapColoring.coverage" NAME="mapColoring Coverage Results" MODIFIED="1449154938813" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$nQueensGA.coverage" NAME="nQueensGA Coverage Results" MODIFIED="1448751461459" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$Course_Schedling.coverage" NAME="Course Schedling Coverage Results" MODIFIED="1416256661193" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$cspBinaryNFL.coverage" NAME="cspBinaryNFL Coverage Results" MODIFIED="1415294821315" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$spellingGA.coverage" NAME="spellingGA Coverage Results" MODIFIED="1448751449905" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$geneticAlgorithm.coverage" NAME="geneticAlgorithm Coverage Results" MODIFIED="1448748463180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/cspCode$nQueens.coverage" NAME="nQueens Coverage Results" MODIFIED="1448487507381" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/cspCode$constraintSatisfaction.coverage" NAME="constraintSatisfaction Coverage Results" MODIFIED="1447703918694" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/cspCode$nQueens.coverage" NAME="nQueens Coverage Results" MODIFIED="1449154756060" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$campusLayoutGA.coverage" NAME="campusLayoutGA Coverage Results" MODIFIED="1448751469500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/cspCode$constraintSatisfaction.coverage" NAME="constraintSatisfaction Coverage Results" MODIFIED="1449154452744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$simpleHillClimb.coverage" NAME="simpleHillClimb Coverage Results" MODIFIED="1415465132269" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$Unittests_in_cspCode.coverage" NAME="Unittests in cspCode Coverage Results" MODIFIED="1415566650248" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/cspCode$sudoku.coverage" NAME="sudoku Coverage Results" MODIFIED="1448917765259" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/cspCode$sudoku.coverage" NAME="sudoku Coverage Results" MODIFIED="1449154946971" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$simulatedAnnealing.coverage" NAME="simulatedAnnealing Coverage Results" MODIFIED="1415653399681" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$cspBinary.coverage" NAME="cspBinary Coverage Results" MODIFIED="1415200033458" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$hillClimbing.coverage" NAME="hillClimbing Coverage Results" MODIFIED="1415553530086" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/cspCode$campusLayout.coverage" NAME="campusLayout Coverage Results" MODIFIED="1448655000370" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/cspCode$campusLayout.coverage" NAME="campusLayout Coverage Results" MODIFIED="1449154935078" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/cspCode$nflScheduleTwo.coverage" NAME="nflScheduleTwo Coverage Results" MODIFIED="1417650999070" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
@@ -48,36 +53,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="geneticAlgorithm.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/geneticAlgorithm.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="129" column="19" selection-start-line="129" selection-start-column="19" selection-end-line="129" selection-end-column="19" />
-              <folding>
-                <element signature="e#100#113#0" expanded="true" />
-                <marker date="1448751342000" expanded="true" signature="596:601" placeholder="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="constraintSatisfaction.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/constraintSatisfaction.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="39" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+              <caret line="43" column="21" selection-start-line="43" selection-start-column="21" selection-end-line="43" selection-end-column="21" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="campusLayoutGA.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/campusLayoutGA.py">
+      <file leaf-file-name="sudokuBig.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/sudokuBig.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
+            <state vertical-scroll-proportion="0.23076923">
+              <caret line="8" column="12" selection-start-line="8" selection-start-column="12" selection-end-line="8" selection-end-column="12" />
               <folding>
-                <element signature="e#25#38#0" expanded="true" />
+                <element signature="e#25#61#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -87,20 +79,28 @@
         <entry file="file://$PROJECT_DIR$/sudoku.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="114" column="0" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
+              <caret line="4" column="3" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sudokuBig.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/sudokuBig.py">
+      <file leaf-file-name="nQueens.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/nQueens.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.63241106">
-              <caret line="32" column="12" selection-start-line="32" selection-start-column="12" selection-end-line="32" selection-end-column="12" />
-              <folding>
-                <element signature="e#25#61#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0">
+              <caret line="122" column="0" selection-start-line="122" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mapColoring.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mapColoring.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -109,37 +109,7 @@
         <entry file="file://$PROJECT_DIR$/campusLayout.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="162" column="33" selection-start-line="162" selection-start-column="33" selection-end-line="162" selection-end-column="33" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mapColoringGA.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mapColoringGA.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="nQueensGA.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/nQueensGA.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="spellingGA.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spellingGA.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
+              <caret line="18" column="11" selection-start-line="18" selection-start-column="11" selection-end-line="18" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -165,16 +135,16 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/constraintSatisfaction.py" />
-        <option value="$PROJECT_DIR$/nQueens.py" />
-        <option value="$PROJECT_DIR$/campusLayout.py" />
-        <option value="$PROJECT_DIR$/mapColoring.py" />
-        <option value="$PROJECT_DIR$/sudoku.py" />
         <option value="$PROJECT_DIR$/campusLayoutGA.py" />
         <option value="$PROJECT_DIR$/mapColoringGA.py" />
         <option value="$PROJECT_DIR$/nQueensGA.py" />
         <option value="$PROJECT_DIR$/geneticAlgorithm.py" />
         <option value="$PROJECT_DIR$/spellingGA.py" />
+        <option value="$PROJECT_DIR$/constraintSatisfaction.py" />
+        <option value="$PROJECT_DIR$/sudoku.py" />
+        <option value="$PROJECT_DIR$/mapColoring.py" />
+        <option value="$PROJECT_DIR$/campusLayout.py" />
+        <option value="$PROJECT_DIR$/nQueens.py" />
         <option value="$PROJECT_DIR$/sudokuBig.py" />
       </list>
     </option>
@@ -185,10 +155,10 @@
     <detection-done>true</detection-done>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2808" />
-    <option name="y" value="28" />
-    <option name="width" value="1362" />
-    <option name="height" value="1408" />
+    <option name="x" value="45" />
+    <option name="y" value="-1001" />
+    <option name="width" value="1280" />
+    <option name="height" value="1001" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -218,6 +188,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -239,7 +210,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -265,60 +235,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.sudokuBig">
-    <configuration default="false" name="campusLayoutGA" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="cspCode" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/campusLayoutGA.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="mapColoringGA" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="cspCode" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/mapColoringGA.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="nQueensGA" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="cspCode" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/nQueensGA.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
     <configuration default="false" name="sudokuBig" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -333,6 +249,60 @@
       <module name="cspCode" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sudokuBig.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="nQueens" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="cspCode" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/nQueens.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="campusLayout" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="cspCode" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/campusLayout.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="mapColoring" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="cspCode" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/mapColoring.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -549,19 +519,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.campusLayoutGA" />
-      <item index="1" class="java.lang.String" itemvalue="Python.mapColoringGA" />
-      <item index="2" class="java.lang.String" itemvalue="Python.nQueensGA" />
-      <item index="3" class="java.lang.String" itemvalue="Python.sudokuBig" />
+      <item index="0" class="java.lang.String" itemvalue="Python.sudokuBig" />
+      <item index="1" class="java.lang.String" itemvalue="Python.nQueens" />
+      <item index="2" class="java.lang.String" itemvalue="Python.campusLayout" />
+      <item index="3" class="java.lang.String" itemvalue="Python.mapColoring" />
       <item index="4" class="java.lang.String" itemvalue="Python.sudoku" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.sudokuBig" />
         <item index="1" class="java.lang.String" itemvalue="Python.sudoku" />
-        <item index="2" class="java.lang.String" itemvalue="Python.campusLayoutGA" />
-        <item index="3" class="java.lang.String" itemvalue="Python.mapColoringGA" />
-        <item index="4" class="java.lang.String" itemvalue="Python.nQueensGA" />
+        <item index="2" class="java.lang.String" itemvalue="Python.mapColoring" />
+        <item index="3" class="java.lang.String" itemvalue="Python.campusLayout" />
+        <item index="4" class="java.lang.String" itemvalue="Python.nQueens" />
       </list>
     </recent_temporary>
   </component>
@@ -579,16 +549,16 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="2808" y="28" width="1362" height="1408" extended-state="0" />
+    <frame x="45" y="-1001" width="1280" height="1001" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1431718" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15234375" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32938856" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41224796" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41201717" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
@@ -891,32 +861,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mapColoring.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.68235296">
-          <caret line="89" column="5" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nQueens.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.49411765">
-          <caret line="29" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/random.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="274" column="0" selection-start-line="274" selection-start-column="0" selection-end-line="274" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/constraintSatisfaction.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -938,10 +886,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/nQueensGA.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spellingGA.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/campusLayoutGA.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
+          <caret line="106" column="18" selection-start-line="106" selection-start-column="18" selection-end-line="106" selection-end-column="18" />
           <folding>
             <element signature="e#25#38#0" expanded="true" />
           </folding>
@@ -951,23 +913,23 @@
     <entry file="file://$PROJECT_DIR$/mapColoringGA.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
+          <caret line="31" column="29" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nQueensGA.py">
+    <entry file="file://$PROJECT_DIR$/constraintSatisfaction.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
+          <caret line="43" column="21" selection-start-line="43" selection-start-column="21" selection-end-line="43" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/spellingGA.py">
+    <entry file="file://$PROJECT_DIR$/nQueens.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
+          <caret line="122" column="0" selection-start-line="122" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -975,7 +937,15 @@
     <entry file="file://$PROJECT_DIR$/campusLayout.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="162" column="33" selection-start-line="162" selection-start-column="33" selection-end-line="162" selection-end-column="33" />
+          <caret line="18" column="11" selection-start-line="18" selection-start-column="11" selection-end-line="18" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mapColoring.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -983,15 +953,15 @@
     <entry file="file://$PROJECT_DIR$/sudoku.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="114" column="0" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
+          <caret line="4" column="3" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sudokuBig.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.63241106">
-          <caret line="32" column="12" selection-start-line="32" selection-start-column="12" selection-end-line="32" selection-end-column="12" />
+        <state vertical-scroll-proportion="0.23076923">
+          <caret line="8" column="12" selection-start-line="8" selection-start-column="12" selection-end-line="8" selection-end-column="12" />
           <folding>
             <element signature="e#25#61#0" expanded="true" />
           </folding>

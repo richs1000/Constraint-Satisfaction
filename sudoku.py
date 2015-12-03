@@ -1,33 +1,10 @@
 __author__ = 'rsimpson'
 
+'''
+This version of the sudoku code is hardwired for a 2x2 grid of 2x2 sub-grids.
+'''
+
 from constraintSatisfaction import *
-
-# This flag is used to turn on forward checking
-FORWARD_CHECKING = False
-
-# This flag is used to turn on arc consistency
-ARC_CONSISTENCY = True
-
-# This flag is used to turn on variable ordering
-VARIABLE_ORDERING = True
-
-# This variable sets the limit for how many comparisons can be made before we give up
-# on finding a better neighbor in hill-climbing search
-COMPARISON_LIMIT = 1000
-
-# This variable sets the limit for the total number of times through the hill-climbing
-# loop before we give up
-LOOP_LIMIT = 20000
-
-# This variable keeps track of the probability of making a big jump
-jumpProbability = 0.1
-
-# This variable keeps track of the size of the jump
-jumpSize = 5
-
-# This variable determines how often we reduce the jump probability
-jumpCounter = 1000
-
 
 class CSPGraphSudoku(CSPGraph):
     def __init__(self):
@@ -107,8 +84,8 @@ def sudoku():
     sqrList = [['0', '1', '2', '3'], ['4', '5', '6', '7'], ['8', '9', '10', '11'], ['12', '13', '14', '15']]
     createNotEqualConstraints(sqrList, cspGraph)
 
-    #hillClimbingSearch(cspGraph)
-    backtrackingSearch(cspGraph)
+    hillClimbingSearch(cspGraph)
+    #backtrackingSearch(cspGraph)
 
 
 sudoku()

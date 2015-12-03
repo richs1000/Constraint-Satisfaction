@@ -35,7 +35,10 @@ COMPARISON_LIMIT = 1000
 
 # This variable sets the limit for the total number of times through the hill-climbing
 # loop before we give up
-LOOP_LIMIT = 20000
+LOOP_LIMIT = 30000
+
+# This variable controls how often we print the loop count during hill-climbing
+PRINT_FREQUENCY = 100
 
 # This variable keeps track of the probability of making a big jump
 jumpProbability = 0.1
@@ -432,21 +435,21 @@ class CSPGraph(object):
         specific objective function in your CSPGraph subclass.
         """
         # start at zero
-        satisfiedConstraints = 0
+        ofValue = 0
         # loop through all of the constraints
         for constraint in self.constraints:
             # if the constraint is satisfied, then increase the count
-            if (constraint.satisfied(constraint.tail.value, constraint.head.value)):
-                satisfiedConstraints += 1
+            if (not constraint.satisfied(constraint.tail.value, constraint.head.value)):
+                ofValue += 1
         # return the count of satisfied constraints
-        return satisfiedConstraints
+        return ofValue
 
     def jump(self):
         """
         Increment the value of several features
         """
         global jumpSize
-        print "jumping..."
+        # print "jumping..."
         # create a range that includes all the available feature indices
         featureIndices = range(0, len(self.features))
         # remove indices until there are only jumpSize left
@@ -499,10 +502,15 @@ def hillClimbingSearch(_cspGraph):
     _cspGraph.printSolution()
     # keep track of how many neighbors have been compared to the current maximum
     neighborComparisons = 0
+    # use a flag to signal when a solution has been found
+    solutionFound = False
     # keep looping until you hit a local maximum
-    while (not _cspGraph.allConstraintsSatisfied() and neighborComparisons < COMPARISON_LIMIT and loopCount < LOOP_LIMIT):
+    while (not solutionFound and neighborComparisons < COMPARISON_LIMIT and loopCount < LOOP_LIMIT):
         # increment the loop count
         loopCount += 1
+        # print the loop count
+        if (loopCount % PRINT_FREQUENCY == 0):
+            print 'loop count = ' + str(loopCount)
         # change the simulated annealing parameters every 'jumpCounter' times through the loop
         if (loopCount % jumpCounter == 0):
             # reduce the probability of a jump
@@ -519,11 +527,16 @@ def hillClimbingSearch(_cspGraph):
             oldObjectiveValue = _cspGraph.objectiveFunction()
             # get a neighboring solution
             oldValueTuple = _cspGraph.pickANeighbor()
+            # get objective function value for the neighbor we just chose
+            newObjectiveValue = _cspGraph.objectiveFunction()
+            # if we have a solution that satisfies all the constraints
+            if newObjectiveValue <= 0:
+                solutionFound = True
             # if we found a better solution, then start over with the new solution
-            if _cspGraph.objectiveFunction() >= oldObjectiveValue:
-                print "loop count = " + str(loopCount) + " total constraints = " + str(len(_cspGraph.constraints)) \
-                      + " obj1 = " + str(oldObjectiveValue) + " obj2 = " + str(_cspGraph.objectiveFunction())
-                print "swapping..."
+            elif newObjectiveValue <= oldObjectiveValue:
+                # print "loop count = " + str(loopCount) + " total constraints = " + str(len(_cspGraph.constraints)) \
+                #       + " obj1 = " + str(oldObjectiveValue) + " obj2 = " + str(_cspGraph.objectiveFunction())
+                # print "swapping..."
                 # reset the number of neighbor comparisons
                 neighborComparisons = 0
             # otherwise, restore the old values and try again
@@ -537,7 +550,7 @@ def hillClimbingSearch(_cspGraph):
                 # restore that value
                 _cspGraph.features[oldFeature].value = _cspGraph.features[oldFeature].domain[oldValue]
     # print solution
-    if _cspGraph.allConstraintsSatisfied():
+    if solutionFound:
         print "found a solution"
     else:
         print "I stopped here:"
